@@ -75,7 +75,8 @@ python3 apknife.py analyze -i payload_for_test_analayse_command.apk
 python3 apknife.py sign -i modified.apk
 ````
 
-````python3 apknife.py -h
+````
+python3 apknife.py -h
 
    ___      _  __      _
   / _ \__ _(_)/ _| ___| |_ _ __
@@ -101,6 +102,8 @@ options:
   -o, --output OUTPUT   Output file/directory
 
 ```
+
+
 
 ---
 
