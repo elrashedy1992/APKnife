@@ -30,8 +30,8 @@
 git clone https://github.com/elrashedy1992/APKnife.git
 cd APKnife
 chmod +x apknife.py
-chmod +x install.sh
-sudo bash install.sh
+chmod +x setup.sh
+sudo bash setup.sh
 python3 apknife.py
 ```
 🔹 Dependencies
