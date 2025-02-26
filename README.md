@@ -33,3 +33,59 @@ chmod +x apknife.py
 chmod +x install.sh
 sudo bash install.sh
 python3 apknife.py
+
+🔹 Dependencies
+
+Ensure you have the following installed:
+
+pip install androguard
+kalilinux/parrot
+sudo apt install androguard
+pkg install zip apksigner
+
+
+
+---
+
+🛠 Usage
+
+Basic Command Structure
+
+python3 apknife.py -i <input.apk> -o
+
+🎯 Examples
+
+🔹 Extract APK
+
+python3 apknife.py extract -i app.apk -o extracted_app
+
+🔹 Modify Manifest
+
+python3 apknife.py edit-manifest -i extracted_app
+
+🔹 Analyze APK
+
+python3 apknife.py analyze -i facebook.apk
+
+🔹 Sign APK
+
+python3 apknife.py sign -i modified.apk
+
+
+---
+
+🛡 Security Scanner
+
+🔍 Scans APKs for:
+✔️ android:debuggable="true"
+✔️ android:allowBackup="true"
+
+python3 apknife.py scan-vulnerabilities -i extracted_app
+
+
+---
+
+📜 License
+
+MIT License – Free to use and modify with credit to Mr_Nightmare.
+
