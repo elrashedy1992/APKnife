@@ -101,7 +101,7 @@ options:
   -i, --input INPUT     Input APK file
   -o, --output OUTPUT   Output file/directory
 
-```
+
 
 
 
