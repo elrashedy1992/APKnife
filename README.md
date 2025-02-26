@@ -65,7 +65,7 @@ python3 apknife.py edit-manifest -i extracted_app
 
 🔹 Analyze APK
 
-python3 apknife.py analyze -i facebook.apk
+python3 apknife.py analyze -i payload_for_test_analayse_command.apk
 
 🔹 Sign APK
 
