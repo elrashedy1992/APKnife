@@ -32,6 +32,7 @@ cd APKnife
 chmod +x apknife.py
 chmod +x setup.sh
 sudo bash setup.sh
+pip install -r requirements.txt
 python3 apknife.py
 ```
 🔹 Dependencies
