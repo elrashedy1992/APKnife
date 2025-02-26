@@ -33,7 +33,7 @@ chmod +x apknife.py
 chmod +x install.sh
 sudo bash install.sh
 python3 apknife.py
-
+```
 🔹 Dependencies
 
 Ensure you have the following installed:
