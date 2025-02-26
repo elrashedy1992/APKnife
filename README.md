@@ -1,3 +1,7 @@
+![APKnife Cover](assets/cover.png)
+<p align="center">
+  <img src="assets/cover.png" alt="APKnife Cover" width="100%">
+</p>
 📌 APKnife - Advanced APK Analysis & Modification Tool
 
 🔹 Version: 2.0
