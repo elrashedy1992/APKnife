@@ -1,0 +1,13 @@
+certifi==2025.1.31
+charset-normalizer==3.4.1
+distlib==0.3.9
+filelock==3.17.0
+gem==0.1.12
+idna==3.10
+platformdirs==4.3.6
+requests==2.32.3
+setuptools==75.8.1
+six==1.17.0
+urllib3==2.3.0
+virtualenv==20.29.2
+wheel==0.45.1
