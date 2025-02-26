@@ -1,6 +1,3 @@
-<p align="center">
-  <img src="assets/cover.png" alt="APKnife Cover" width="100%">
-</p>
 <!DOCTYPE html>
 <html lang="en">
 <head>
