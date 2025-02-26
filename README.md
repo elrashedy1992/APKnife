@@ -29,6 +29,8 @@ git clone https://github.com/mrnightmare/APKnife.git
 cd APKnife
 chmod +x apknife.py
 chmod +x install.sh
+sudo bash install.sh
+python3 apknife.py
 
 🔹 Dependencies
 
@@ -92,22 +94,7 @@ Run:
 python3 apknife.py scan-vulnerabilities -i extracted_app
 
 
----
-
-🎨 Banner
-
-___      _  __      _
-  / _ \__ _(_)/ _| ___| |_ _ __
- | | | / _` | | |_ / _ \ __| '__|
- | |_| | (_| | |  _|  __/ |_| |
-  \___/ \__,_|_|_|  \___|\__|_|  v2.0
--------------------------------------
- APK modification tool (without apktool)
- Created by mr_nightmare
-
-
----
-
+--
 📜 License
 
 MIT License – Free to use and modify with credit to Mr_Nightmare.
