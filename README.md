@@ -73,9 +73,9 @@ python3 apknife.py analyze -i payload_for_test_analayse_command.apk
 🔹 Sign APK
 ```
 python3 apknife.py sign -i modified.apk
-````
+```
 
-````
+```
 python3 apknife.py -h
 
    ___      _  __      _
