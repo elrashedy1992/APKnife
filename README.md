@@ -75,6 +75,33 @@ python3 apknife.py analyze -i payload_for_test_analayse_command.apk
 python3 apknife.py sign -i modified.apk
 ````
 
+````python3 apknife.py -h
+
+   ___      _  __      _
+  / _ \__ _(_)/ _| ___| |_ _ __
+ | | | / _` | | |_ / _ \ __| '__|
+ | |_| | (_| | |  _|  __/ |_| |
+  \___/ \__,_|_|_|  \___|\__|_|  v2.0
+-------------------------------------
+ APK modification tool (without apktool)
+ Created by mr_nightmare
+
+usage: apknife.py [-h] [-i INPUT] [-o OUTPUT]
+                  {extract,build,sign,analyze,edit-manifest,smali,decode-xml,find-oncreate,find-api,scan-vulnerabilities}
+
+APKnife: Advanced APK analysis & modification tool
+
+positional arguments:
+  {extract,build,sign,analyze,edit-manifest,smali,decode-xml,find-oncreate,find-api,scan-vulnerabilities}
+                        Command to execute
+
+options:
+  -h, --help            show this help message and exit
+  -i, --input INPUT     Input APK file
+  -o, --output OUTPUT   Output file/directory
+
+```
+
 ---
 
 🛡 Security Scanner
