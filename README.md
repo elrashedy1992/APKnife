@@ -68,7 +68,22 @@ python3 apknife.py edit-manifest -i extracted_app
 ```
 🔹 Analyze APK
 ```
-python3 apknife.py analyze -i payload_for_test_analayse_command.apk
+python3 apknife.py analyze -i payload_test.apk
+
+   ___      _  __      _
+  / _ \__ _(_)/ _| ___| |_ _ __
+ | | | / _` | | |_ / _ \ __| '__|
+ | |_| | (_| | |  _|  __/ |_| |
+  \___/ \__,_|_|_|  \___|\__|_|  v2.0
+-------------------------------------
+ APK modification tool (without apktool)
+ Created by mr_nightmare
+
+Starting analysis on AndroidManifest.xml
+APK file was successfully validated!
+📊 APK Package: com.metasploit.stage
+📜 Permissions: android.permission.READ_CONTACTS, android.permission.READ_SMS, android.permission.SEND_SMS, android.permission.CALL_PHONE, android.permission.WRITE_CALL_LOG, android.permission.ACCESS_WIFI_STATE, android.permission.WRITE_CONTACTS, android.permission.ACCESS_NETWORK_STATE, android.permission.ACCESS_FINE_LOCATION, android.permission.WAKE_LOCK, android.permission.SET_WALLPAPER, android.permission.RECEIVE_SMS, android.permission.READ_CALL_LOG, android.permission.WRITE_SETTINGS, android.permission.RECORD_AUDIO, android.permission.RECEIVE_BOOT_COMPLETED, android.permission.ACCESS_COARSE_LOCATION, android.permission.WRITE_EXTERNAL_STORAGE, android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, android.permission.READ_PHONE_STATE, android.permission.CHANGE_WIFI_STATE, android.permission.CAMERA, android.permission.INTERNET
+[+] Execution time for analyze_apk: 0.0506 seconds
 ```
 🔹 Sign APK
 ```
