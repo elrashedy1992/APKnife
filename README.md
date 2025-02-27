@@ -200,7 +200,56 @@ OrgTechRef:    https://rdap.arin.net/registry/entity/IANA-IP-ARIN
 
 kaboos@localhost:~/apk_tool/newapknif/APKnife$
 ```
+🔍 permissions_scanner: Analyzes APK permissions to detect potential security risks and privacy violations. 🛡️📱
+```
+kaboos@localhost:~/apk_tool/newapknif/APKnife$ python3 apknife.py scan-permissions -i payload_test.apk
 
+   ___      _  __      _
+  / _ \__ _(_)/ _| ___| |_ _ __
+ | | | / _` | | |_ / _ \ __| '__|
+ | |_| | (_| | |  _|  __/ |_| |
+  \___/ \__,_|_|_|  \___|\__|_|  v2.0
+-------------------------------------
+ APK modification tool (without apktool)
+ Created by mr_nightmare
+
+
+🔍 Scanning permissions in: payload_test.apk
+
+✅ **Permissions Found:**
+
+🔵 **Normal Permissions:**
+  - android.permission.ACCESS_NETWORK_STATE: Allows applications to access networks.
+  - android.permission.CHANGE_WIFI_STATE: Allows changing Wi-Fi state.
+  - android.permission.ACCESS_WIFI_STATE: Allows applications to access Wi-Fi networks.
+  - android.permission.SET_WALLPAPER: Allows setting the wallpaper.
+
+🟠 **Dangerous Permissions:**
+  - android.permission.CALL_PHONE: Initiate a phone call without user interaction.
+  - android.permission.WRITE_CONTACTS: Write user contacts data.
+  - android.permission.ACCESS_FINE_LOCATION: Precise location access using GPS.
+  - android.permission.READ_CALL_LOG: Read the user's call log.
+  - android.permission.WRITE_CALL_LOG: Modify the user's call log.
+  - android.permission.CAMERA: Access the camera for photos and videos.
+  - android.permission.READ_CONTACTS: Read user contacts data.
+  - android.permission.RECORD_AUDIO: Record audio using the microphone.
+  - android.permission.READ_SMS: Read SMS messages.
+  - android.permission.SEND_SMS: Send SMS messages.
+  - android.permission.ACCESS_COARSE_LOCATION: Approximate location access using network sources.
+  - android.permission.READ_PHONE_STATE: Read phone state information.
+  - android.permission.RECEIVE_SMS: Receive SMS messages.
+
+🔴 **Critical Permissions:**
+  - android.permission.WRITE_SETTINGS: Modify system settings, which can be dangerous.
+  - android.permission.RECEIVE_BOOT_COMPLETED: Start after boot, potentially for persistent background execution.
+  - android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS: Ignore battery optimizations, potentially draining battery.
+  - android.permission.WRITE_EXTERNAL_STORAGE: Write to external storage, potentially exposing user data.
+  - android.permission.INTERNET: Access the internet, often used for external communication.
+
+⚠️ **Unknown Permissions:** (Might need further analysis)
+  - android.permission.WAKE_LOCK: Unknown permission - may require further analysis.
+kaboos@localhost:~/apk_tool/newapknif/APKnife$
+```
 ---
 
 🛡 Security Scanner
