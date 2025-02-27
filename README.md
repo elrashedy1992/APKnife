@@ -12,6 +12,7 @@
 
 ## 🚀 Features
 
+
 ✅ Extract APK Files – Extracts APK contents for modification
 ✅ Modify AndroidManifest.xml – Edit package name and permissions
 ✅ Analyze APK – Retrieves package details and permissions
@@ -22,6 +23,7 @@
 ✅ Vulnerability Scanner – Detects security flaws in AndroidManifest.xml
 ✅ Scan Permissions – Lists all permissions used by the APK and identifies risky ones
 ✅ Catch RAT – Detects potential Remote Access Trojans (RATs) by analyzing APK network activity
+
 ---
 
 ## 📥 Installation
