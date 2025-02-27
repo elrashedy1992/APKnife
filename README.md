@@ -87,13 +87,13 @@ python3 apknife.py -h
  APK modification tool (without apktool)
  Created by mr_nightmare
 
-usage: apknife.py [-h] [-i INPUT] [-o OUTPUT]
-                  {extract,build,sign,analyze,edit-manifest,smali,decode-xml,find-oncreate,find-api,scan-vulnerabilities}
+usage: apknife.py [-h] -i INPUT [-o OUTPUT]
+                  {extract,build,sign,analyze,edit-manifest,smali,decode-xml,find-oncreate,find-api,scan-vulnerabilities,scan-permissions,catch_rat}
 
 APKnife: Advanced APK analysis & modification tool
 
 positional arguments:
-  {extract,build,sign,analyze,edit-manifest,smali,decode-xml,find-oncreate,find-api,scan-vulnerabilities}
+  {extract,build,sign,analyze,edit-manifest,smali,decode-xml,find-oncreate,find-api,scan-vulnerabilities,scan-permissions,catch_rat}
                         Command to execute
 
 options:
