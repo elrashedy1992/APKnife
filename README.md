@@ -6,7 +6,7 @@
 
 🔹 **Version:** 2.0  
 🔹 **Author:** Mr_Nightmare  
-🔹 **Description:** A powerful tool for APK analysis, modification, and security scanning without using apktool.
+🔹 **Description:** A powerful tool for APK analysis, modification, and security scanning
 
 ---
 
