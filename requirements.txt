@@ -4,10 +4,16 @@ distlib==0.3.9
 filelock==3.17.0
 gem==0.1.12
 idna==3.10
+maturin==1.8.2
 platformdirs==4.3.6
+prompt_toolkit==3.0.50
+pybind11==2.13.6
+python-dateutil==2.9.0.post0
 requests==2.32.3
 setuptools==75.8.1
 six==1.17.0
 urllib3==2.3.0
 virtualenv==20.29.2
+wcwidth==0.2.13
 wheel==0.45.1
+whois==1.20240129.2

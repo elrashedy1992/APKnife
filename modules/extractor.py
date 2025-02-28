@@ -23,3 +23,4 @@ def extract_apk(apk_path, output_dir):
     except Exception as e:
         print(f"❌ Error extracting APK: {e}")
         return []
+

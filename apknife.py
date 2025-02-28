@@ -1,11 +1,11 @@
 import argparse
-import os
 import logging
 import sys
+from modules.interactive_mode import interactive_shell
 from modules import (
     extractor, builder, signer, analyzer, manifest_editor, smali_tools,
     xml_decoder, api_finder, vulnerability_scanner, permission_scanner,
-    catch_rat, java_extractor, interactive_mode, extract_sensitive
+    catch_rat, java_extractor, extract_sensitive
 )
 
 # ANSI color codes for terminal output styling
@@ -45,7 +45,7 @@ def main():
     # Execute the selected command
     try:
         if args.command == "interactive":
-            interactive_mode.interactive_shell()
+            interactive_shell()
         elif args.command == "extract":
             extractor.extract_apk(args.input, args.output)
         elif args.command == "build":
