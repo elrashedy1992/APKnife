@@ -61,7 +61,7 @@ COMMANDS = {
     "smali": "Decompiles APK into smali code (-i input.apk -o output_folder)",
     "decode-xml": "Decodes binary XML files in an APK (-i input.apk)",
     "find-oncreate": "Finds the onCreate methods inside smali code (-i input.apk)",
-    "find-api": "Finds API calls used in an APK (-i input.apk)",
+    "find-api": "Finds API calls used in an APK (-i input.apk or -i smali_file(recomended))",
     "scan-vulnerabilities": "Scans APK for security vulnerabilities (-i input.apk)",
     "scan-permissions": "Lists all permissions requested by an APK (-i input.apk)",
     "catch_rat": "Detects potential RAT (Remote Access Trojan) in APK (-i input.apk)",

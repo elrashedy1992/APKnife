@@ -2,10 +2,13 @@ import os
 import json
 import re
 import zipfile
-import time
-from tqdm import tqdm  # شريط تحميل لتحسين تجربة المستخدم
+import subprocess
+import csv
+from tqdm import tqdm
+from concurrent.futures import ThreadPoolExecutor
+from androguard.misc import AnalyzeAPK
 
-# قائمة الأنماط للبحث عن البيانات الحساسة
+# أنماط البحث عن البيانات الحساسة
 PATTERNS = {
     "API Keys": r"(?i)(google_api_key|aws_secret_access_key|firebase_api_key|auth_key)=[\"']?([A-Za-z0-9_\-]+)[\"']?",
     "Passwords": r"(?i)(password|pass|pwd|secret)=[\"']?([A-Za-z0-9@#$%^&+=]{6,})[\"']?",
@@ -15,57 +18,69 @@ PATTERNS = {
     "RSA Keys": r"-----BEGIN RSA PRIVATE KEY-----[\s\S]+?-----END RSA PRIVATE KEY-----",
 }
 
-def extract_sensitive_data(apk_file, output_file="report.json", output_format="json"):
-    """ استخراج البيانات الحساسة من ملف APK وتحليلها """
+def analyze_dex_files(apk_file):
+    """ تحليل ملفات DEX داخل APK """
+    print("[+] Analyzing DEX files for potential vulnerabilities...")
+    a, d, dx = AnalyzeAPK(apk_file)
+
+    for cls in dx.get_classes():
+        print(f" - {cls}")
+
+def scan_shared_preferences(apk_path):
+    
+    with zipfile.ZipFile(apk_path, 'r') as apk:
+        for file in apk.namelist():
+            if "shared_prefs" in file and file.endswith(".xml"):
+                with apk.open(file) as f:
+                    content = f.read().decode(errors="ignore")
+                    if "password" in content or "api_key" in content:
+                        print(f"[!] Sensitive data found in: {file}")
+
+def process_file(file, apk, extracted_data):
+    
+    try:
+        with apk.open(file) as f:
+            content = f.read().decode(errors="ignore")
+
+            for category, pattern in PATTERNS.items():
+                matches = re.findall(pattern, content)
+                if matches:
+                    extracted_data.setdefault(category, []).extend(matches)
+    except Exception:
+        pass  
+
+def save_report_json(extracted_data, output_file):
+  
+    with open(output_file, "w", encoding="utf-8") as report:
+        json.dump(extracted_data, report, indent=4, ensure_ascii=False)
+    print(f"[✔] Report saved in: {output_file}")
+
+def extract_sensitive_data(apk_file, output_file="sensitive_report.json"):
+    
     if not os.path.exists(apk_file):
-        print("[!] الملف غير موجود: ", apk_file)
+        print("[!] File not found:", apk_file)
         return
 
-    print("[*] جاري استخراج البيانات الحساسة من:", apk_file)
-
+    print("[*] Extracting sensitive data from:", apk_file)
     extracted_data = {}
 
-    # فك ضغط ملف الـ APK
+   
     with zipfile.ZipFile(apk_file, 'r') as apk:
         file_list = apk.namelist()
 
-        for file in tqdm(file_list, desc="🔎 فحص الملفات", unit="ملف"):
-            try:
-                with apk.open(file) as f:
-                    content = f.read().decode(errors="ignore")  # قراءة الملف بتجاهل الأخطاء
+        with ThreadPoolExecutor() as executor:
+            for file in tqdm(file_list, desc="🔎 Scanning files", unit="file"):
+                executor.submit(process_file, file, apk, extracted_data)
 
-                    for category, pattern in PATTERNS.items():
-                        matches = re.findall(pattern, content)
-                        if matches:
-                            extracted_data.setdefault(category, []).extend(matches)
-            except Exception as e:
-                pass  # تجاهل الأخطاء التي قد تحدث أثناء قراءة الملفات
+    
+    analyze_dex_files(apk_file)
+
+    
+    scan_shared_preferences(apk_file)
 
     if not extracted_data:
-        print("[✓] لم يتم العثور على بيانات حساسة في التطبيق.")
+        print("[✓] No sensitive data found in the application.")
         return
 
-    print("\n[+] تم العثور على بيانات حساسة!")
-
-    # حفظ التقرير بتنسيق JSON أو TXT
-    if output_format.lower() == "json":
-        with open(output_file, "w", encoding="utf-8") as report:
-            json.dump(extracted_data, report, indent=4, ensure_ascii=False)
-        print(f"[✔] تم حفظ التقرير في: {output_file}")
-
-    elif output_format.lower() == "txt":
-        with open(output_file, "w", encoding="utf-8") as report:
-            for category, values in extracted_data.items():
-                report.write(f"== {category} ==\n")
-                for value in values:
-                    report.write(f"- {value}\n")
-                report.write("\n")
-        print(f"[✔] تم حفظ التقرير في: {output_file}")
-
-    else:
-        print("[!] تنسيق غير مدعوم! استخدم JSON أو TXT.")
-
-# اختبار الأداة بشكل مباشر
-if __name__ == "__main__":
-    apk_path = "hello.apk"
-    extract_sensitive_data(apk_path, "sensitive_data_report.json", "json")
+    print("\n[+] Sensitive data found!")
+    save_report_json(extracted_data, output_file)

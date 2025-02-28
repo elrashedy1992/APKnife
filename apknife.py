@@ -65,7 +65,7 @@ def main():
         elif args.command == "find-api":
             api_finder.find_api_calls(args.input)
         elif args.command == "scan-vulnerabilities":
-            vulnerability_scanner.scan_apk(args.input)
+            vulnerability_scanner.scan_apk(args.input)  # ✅ استدعاء موديول الفحص
         elif args.command == "scan-permissions":
             permission_scanner.scan_permissions(args.input)
         elif args.command == "catch_rat":
@@ -74,7 +74,7 @@ def main():
             java_extractor.extract_java(args.input, args.output, args.compress)
         elif args.command == "extract-sensitive":
             if not args.output:
-                args.output = "sensitive_report.json"  # Default output if not specified
+                args.output = "sensitive_report.json"
             extract_sensitive.extract_sensitive_data(args.input, args.output)
         else:
             logging.error(f"{RED}[!] Unknown command!{RESET}")
