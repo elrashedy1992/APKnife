@@ -284,6 +284,48 @@ kaboos@localhost:~/apk_tool/newapknif/APKnife$ python3 apknife.py scan-permissio
   - android.permission.WAKE_LOCK: Unknown permission - may require further analysis.
 kaboos@localhost:~/apk_tool/newapknif/APKnife$
 ```
+
+```
+python3 apknife.py interactive
+
+      || ________________
+O|===|* >________________>
+      ||
+     APKnife – The Double-Edged Blade of APK Analysis 🔪🧸
+     Fear the Blade, Trust the Power! 🎨
+     Where Hacking Meets Art! 🖌️
+
+⚙️  Loading the blade...
+🔪  Sharpening edges...
+🟢  Ready to cut!
+
+APKnife Interactive Mode (Type 'help' for commands, 'exit' to quit)
+APKnife> help
+
+APKnife - The Double-Edged Blade of APK Analysis 🔪
+Available Commands:
+
+  extract -i <apk_file> -o <output_dir>      Extracts the contents of an APK file.
+  build -i <input_dir> -o <output_apk>      Rebuilds an APK from extracted files.
+  sign -i <apk_file>                       Signs an APK file to make it installable.
+  analyze -i <apk_file>                    Provides detailed analysis of an APK file.
+  edit-manifest -i <apk_file>              Modifies the AndroidManifest.xml file.
+  smali -i <apk_file> -o <output_dir>      Decompiles an APK into Smali code.
+  decode-xml -i <apk_file>                 Decodes XML files inside an APK.
+  find-oncreate -i <apk_file>              Searches for the onCreate method.
+  find-api -i <apk_file>                   Detects API calls inside an APK.
+  scan-vulnerabilities -i <apk_file>       Scans the APK for known vulnerabilities.
+  scan-permissions -i <apk_file>           Lists all permissions requested by the APK.
+  catch_rat -i <apk_file>                  Detects RAT (Remote Access Trojan) indicators.
+  extract-java -i <apk_file> -o <output_dir> -c Extracts Java source code from an APK.
+  extract-sensitive -i <apk_file> [-o report.json] Extracts sensitive data from an APK.
+
+  General Commands:
+  help  - Shows this help menu.
+  exit  - Exits the interactive mode.
+
+APKnife>
+```
 ---
 
 🛡 Security Scanner
