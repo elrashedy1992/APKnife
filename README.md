@@ -95,7 +95,7 @@ python3 apknife.py analyze -i payload_test.apk
  | |_| | (_| | |  _|  __/ |_| |
   \___/ \__,_|_|_|  \___|\__|_|  v2.0
 -------------------------------------
- APK modification tool (without apktool)
+ APK modification tool 
  Created by mr_nightmare
 
 Starting analysis on AndroidManifest.xml
@@ -118,7 +118,7 @@ python3 apknife.py -h
  | |_| | (_| | |  _|  __/ |_| |
   \___/ \__,_|_|_|  \___|\__|_|  v2.0
 -------------------------------------
- APK modification tool (without apktool)
+ APK modification tool 
  Created by mr_nightmare
 
 usage: apknife.py [-h] -i INPUT [-o OUTPUT]
@@ -148,7 +148,7 @@ kaboos@localhost:~/apk_tool/newapknif/APKnife$ python3 apknife.py catch_rat -i p
  | |_| | (_| | |  _|  __/ |_| |
   \___/ \__,_|_|_|  \___|\__|_|  v2.0
 -------------------------------------
- APK modification tool (without apktool)
+ APK modification tool 
  Created by mr_nightmare
 
 ✅ APK extracted to temp_extracted_apk
