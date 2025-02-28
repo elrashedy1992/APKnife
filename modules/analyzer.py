@@ -1,5 +1,6 @@
 from androguard.core.bytecodes.apk import APK
 
+
 def analyze_apk(apk_path):
 
     try:

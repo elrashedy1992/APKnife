@@ -1,9 +1,12 @@
+import json
 import os
 import re
-import requests
 import subprocess
-import json
+
+import requests
+
 from modules.extractor import extract_apk
+
 
 def extract_ips_from_apk(apk_path):
     """Extract all suspicious IPs from the APK files."""
@@ -14,7 +17,7 @@ def extract_ips_from_apk(apk_path):
         print("❌ Extraction failed or no files found.")
         return []
 
-    ip_pattern = re.compile(r'\b(?:\d{1,3}\.){3}\d{1,3}\b')
+    ip_pattern = re.compile(r"\b(?:\d{1,3}\.){3}\d{1,3}\b")
     found_ips = set()
 
     for file_path in extracted_files:
@@ -31,6 +34,7 @@ def extract_ips_from_apk(apk_path):
 
     return list(found_ips)
 
+
 def get_ip_info(ip):
     """Fetch IP information using ipinfo.io."""
     url = f"https://ipinfo.io/{ip}/json"
@@ -44,6 +48,7 @@ def get_ip_info(ip):
         print(f"❌ Failed to fetch IP info: {e}")
         return None
 
+
 def run_whois(ip):
     """Run WHOIS lookup for the given IP address."""
     try:
@@ -54,6 +59,7 @@ def run_whois(ip):
         print("❌ WHOIS command not found. Please install it first.")
     except Exception as e:
         print(f"❌ Failed to run WHOIS: {e}")
+
 
 def analyze_apk_ips(apk_path):
     """Extract and analyze suspicious IPs from APK."""

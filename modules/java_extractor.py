@@ -1,15 +1,22 @@
-import os
-import zipfile
 import logging
+import os
 import shutil
 import subprocess
+import zipfile
 
 # Configure logging to save errors and outputs
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s", filename="log.txt", filemode="a")
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    filename="log.txt",
+    filemode="a",
+)
+
 
 def is_jadx_installed():
     """Check if JADX is installed on the system."""
     return shutil.which("jadx") is not None
+
 
 def extract_java(apk_path, output_dir="extracted_java", compress=False):
     """Extract Java files from an APK using JADX."""
@@ -19,7 +26,9 @@ def extract_java(apk_path, output_dir="extracted_java", compress=False):
         return
 
     if not is_jadx_installed():
-        logging.error("[!] JADX is not installed! Please install it using: sudo apt install jadx or download it from https://github.com/skylot/jadx")
+        logging.error(
+            "[!] JADX is not installed! Please install it using: sudo apt install jadx or download it from https://github.com/skylot/jadx"
+        )
         return
 
     if not os.path.exists(output_dir):
@@ -28,10 +37,10 @@ def extract_java(apk_path, output_dir="extracted_java", compress=False):
     logging.info(f"[+] Extracting Java files from {apk_path} to {output_dir}")
 
     # Unzip APK to extract DEX files
-    with zipfile.ZipFile(apk_path, 'r') as zip_ref:
+    with zipfile.ZipFile(apk_path, "r") as zip_ref:
         zip_ref.extractall(output_dir)
-    
-    dex_files = [f for f in os.listdir(output_dir) if f.endswith('.dex')]
+
+    dex_files = [f for f in os.listdir(output_dir) if f.endswith(".dex")]
     if not dex_files:
         logging.warning("[!] No DEX files found in the APK!")
         return
@@ -53,6 +62,7 @@ def extract_java(apk_path, output_dir="extracted_java", compress=False):
     # Compress output if requested
     if compress:
         compress_output(jadx_output)
+
 
 def compress_output(output_dir):
     """Compress extracted Java files into a ZIP archive."""

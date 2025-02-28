@@ -1,10 +1,11 @@
 import logging
-import time
 import sys
+import time
+
 from prompt_toolkit import PromptSession
+from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.history import FileHistory
-from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.styles import Style
 
 # ANSI color codes for terminal output styling
@@ -21,10 +22,12 @@ RESET = "\033[0m"
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 
 # Define a style for the prompt
-style = Style.from_dict({
-    'prompt': 'fg:ansicyan',
-    'input': 'fg:ansigreen',
-})
+style = Style.from_dict(
+    {
+        "prompt": "fg:ansicyan",
+        "input": "fg:ansigreen",
+    }
+)
 
 # Banner ASCII Art
 BANNER = f"""{RED}
@@ -36,6 +39,7 @@ O|===|* >________________>
 {WHITE}     Where Hacking Meets Art! 🖌️
 """
 
+
 # Animated loading effect
 def loading_effect(text, delay=0.1):
     for char in text:
@@ -43,6 +47,7 @@ def loading_effect(text, delay=0.1):
         sys.stdout.flush()
         time.sleep(delay)
     print()
+
 
 # Display the banner
 print(BANNER)
@@ -68,19 +73,22 @@ COMMANDS = {
     "extract-java": "Extracts Java source code from an APK (-i input.apk -o output_folder -c [optional])",
     "extract-sensitive": "Extracts sensitive information from APK (-i input.apk -o output.json)",
     "help": "Displays this help menu",
-    "exit": "Exits the interactive mode"
+    "exit": "Exits the interactive mode",
 }
+
 
 def interactive_shell():
     completer = WordCompleter(COMMANDS.keys(), ignore_case=True)
-    session = PromptSession(history=FileHistory('.apknife_history'),
-                            auto_suggest=AutoSuggestFromHistory(),
-                            completer=completer,
-                            style=style)
+    session = PromptSession(
+        history=FileHistory(".apknife_history"),
+        auto_suggest=AutoSuggestFromHistory(),
+        completer=completer,
+        style=style,
+    )
 
     while True:
         try:
-            text = session.prompt('APKnife> ')
+            text = session.prompt("APKnife> ")
             if text.strip() == "exit":
                 break
 
@@ -114,52 +122,73 @@ def interactive_shell():
                 elif arg == "-c":
                     compress = True
 
-            if command != "interactive" and not input_file and command not in ["help", "exit"]:
-                logging.error(f"{RED}[!] You must specify an input file using `-i`{RESET}")
+            if (
+                command != "interactive"
+                and not input_file
+                and command not in ["help", "exit"]
+            ):
+                logging.error(
+                    f"{RED}[!] You must specify an input file using `-i`{RESET}"
+                )
                 continue
 
             try:
                 if command == "extract":
                     from modules.extractor import extract_apk
+
                     extract_apk(input_file, output_file)
                 elif command == "build":
                     from modules.builder import build_apk
+
                     build_apk(input_file, output_file)
                 elif command == "sign":
                     from modules.signer import sign_apk
+
                     sign_apk(input_file)
                 elif command == "analyze":
                     from modules.analyzer import analyze_apk
+
                     analyze_apk(input_file)
                 elif command == "edit-manifest":
                     from modules.manifest_editor import edit_manifest
+
                     edit_manifest(input_file)
                 elif command == "smali":
                     from modules.smali_tools import decompile_apk
+
                     decompile_apk(input_file, output_file)
                 elif command == "decode-xml":
                     from modules.xml_decoder import decode_xml
+
                     decode_xml(input_file)
                 elif command == "find-oncreate":
                     from modules.smali_tools import find_oncreate
+
                     find_oncreate(input_file)
                 elif command == "find-api":
                     from modules.api_finder import find_api_calls
+
                     find_api_calls(input_file)
                 elif command == "scan-vulnerabilities":
                     from modules.vulnerability_scanner import scan_apk
+
                     scan_apk(input_file)
                 elif command == "scan-permissions":
                     from modules.permission_scanner import scan_permissions
+
                     scan_permissions(input_file)
                 elif command == "catch_rat":
                     from modules.catch_rat import analyze_apk_ips
+
                     analyze_apk_ips(input_file)
                 elif command == "extract-java":
                     from modules.java_extractor import extract_java
+
                     extract_java(input_file, output_file, compress)
                 elif command == "extract-sensitive":
-                    from modules.extract_sensitive import extract_sensitive_data
+                    from modules.extract_sensitive import \
+                        extract_sensitive_data
+
                     if not output_file:
                         output_file = "sensitive_report.json"
                     extract_sensitive_data(input_file, output_file)

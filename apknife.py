@@ -1,12 +1,12 @@
 import argparse
 import logging
 import sys
+
+from modules import (analyzer, api_finder, builder, catch_rat,
+                     extract_sensitive, extractor, java_extractor,
+                     manifest_editor, permission_scanner, signer, smali_tools,
+                     vulnerability_scanner, xml_decoder)
 from modules.interactive_mode import interactive_shell
-from modules import (
-    extractor, builder, signer, analyzer, manifest_editor, smali_tools,
-    xml_decoder, api_finder, vulnerability_scanner, permission_scanner,
-    catch_rat, java_extractor, extract_sensitive
-)
 
 # ANSI color codes for terminal output styling
 RED = "\033[91m"
@@ -21,19 +21,42 @@ RESET = "\033[0m"
 # Logging setup
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 
-def main():
-    parser = argparse.ArgumentParser(description="APKnife: Advanced APK analysis & modification tool")
 
-    parser.add_argument("command", choices=[
-        "extract", "build", "sign", "analyze", "edit-manifest", "smali",
-        "decode-xml", "find-oncreate", "find-api", "scan-vulnerabilities",
-        "scan-permissions", "catch_rat", "extract-java", "interactive",
-        "extract-sensitive"
-    ], help="Command to execute")
+def main():
+    parser = argparse.ArgumentParser(
+        description="APKnife: Advanced APK analysis & modification tool"
+    )
+
+    parser.add_argument(
+        "command",
+        choices=[
+            "extract",
+            "build",
+            "sign",
+            "analyze",
+            "edit-manifest",
+            "smali",
+            "decode-xml",
+            "find-oncreate",
+            "find-api",
+            "scan-vulnerabilities",
+            "scan-permissions",
+            "catch_rat",
+            "extract-java",
+            "interactive",
+            "extract-sensitive",
+        ],
+        help="Command to execute",
+    )
 
     parser.add_argument("-i", "--input", help="Input APK file")
     parser.add_argument("-o", "--output", help="Output file/directory")
-    parser.add_argument("-c", "--compress", action="store_true", help="Compress extracted Java files into a ZIP archive")
+    parser.add_argument(
+        "-c",
+        "--compress",
+        action="store_true",
+        help="Compress extracted Java files into a ZIP archive",
+    )
 
     args = parser.parse_args()
 
@@ -81,6 +104,7 @@ def main():
     except Exception as e:
         logging.error(f"{RED}[!] Error executing `{args.command}`: {e}{RESET}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

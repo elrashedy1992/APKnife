@@ -1,7 +1,14 @@
 import os
 import re
 
-API_LIST = ["getDeviceId", "getSubscriberId", "getSimSerialNumber", "getNetworkOperator", "getInstalledPackages"]
+API_LIST = [
+    "getDeviceId",
+    "getSubscriberId",
+    "getSimSerialNumber",
+    "getNetworkOperator",
+    "getInstalledPackages",
+]
+
 
 def find_api_calls(smali_dir):
     print("🔍 Searching for API calls...")

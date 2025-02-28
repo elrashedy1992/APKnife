@@ -1,8 +1,9 @@
 import os
 import subprocess
 
+
 def decompile_apk(apk_dir, output_dir):
-    
+
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
@@ -12,6 +13,7 @@ def decompile_apk(apk_dir, output_dir):
         print(f"✅ Smali code extracted to {output_dir}")
     except subprocess.CalledProcessError:
         print("❌ Error during Smali decompilation")
+
 
 def find_oncreate(smali_dir):
     for root, _, files in os.walk(smali_dir):
