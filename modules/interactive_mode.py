@@ -28,9 +28,9 @@ style = Style.from_dict({
 
 # Banner ASCII Art
 BANNER = f"""{RED}
-      /| ________________
+      || ________________
 O|===|* >________________>
-      \|
+      ||
 {RESET}{CYAN}     APKnife – The Double-Edged Blade of APK Analysis 🔪🧸
 {YELLOW}     Fear the Blade, Trust the Power! 🎨
 {WHITE}     Where Hacking Meets Art! 🖌️
