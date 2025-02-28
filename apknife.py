@@ -3,7 +3,7 @@ import os
 import logging
 import time
 import sys
-from modules import extractor, builder, signer, analyzer, manifest_editor, smali_tools, xml_decoder, api_finder, vulnerability_scanner, permission_scanner, catch_rat
+from modules import extractor, builder, signer, analyzer, manifest_editor, smali_tools, xml_decoder, api_finder, vulnerability_scanner, permission_scanner, catch_rat, java_extractor
 
 # ANSI color codes for styling
 RED = "\033[91m"
@@ -29,7 +29,7 @@ def loading_effect(text, delay=0.1):
 BANNER = f"""{RED}
       || ________________
 O|===|* >________________>
-      ||  
+      ||
 {RESET}{CYAN}     APKnife – The Double-Edged Blade of APK Analysis 🔪🧸
 {YELLOW}     Fear the Blade, Trust the Power! 🎨
 {WHITE}     Where Hacking Meets Art! 🖌️
@@ -60,12 +60,17 @@ def benchmark(func):
 def main():
     parser = argparse.ArgumentParser(description="APKnife: Advanced APK analysis & modification tool")
 
-    parser.add_argument("command", choices=["extract", "build", "sign", "analyze", "edit-manifest", "smali", "decode-xml", "find-oncreate", "find-api", "scan-vulnerabilities", "scan-permissions", "catch_rat"], help="Command to execute")
+    parser.add_argument("command", choices=[
+        "extract", "build", "sign", "analyze", "edit-manifest", "smali", "decode-xml", "find-oncreate",
+        "find-api", "scan-vulnerabilities", "scan-permissions", "catch_rat", "extract-java"
+    ], help="Command to execute")
+    
     parser.add_argument("-i", "--input", help="Input APK file", required=True)
     parser.add_argument("-o", "--output", help="Output file/directory")
+    parser.add_argument("-c", "--compress", action="store_true", help="Compress extracted Java files into a ZIP archive")
 
     args = parser.parse_args()
-
+    
     try:
         if args.command == "extract":
             benchmark(extractor.extract_apk)(args.input, args.output)
@@ -91,6 +96,9 @@ def main():
             permission_scanner.scan_permissions(args.input)
         elif args.command == "catch_rat":
             catch_rat.analyze_apk_ips(args.input)
+        elif args.command == "extract-java":
+            benchmark(java_extractor.extract_java)(args.input, args.output, args.compress)
+
     except Exception as e:
         logging.error(f"[!] Error: {e}")
 
