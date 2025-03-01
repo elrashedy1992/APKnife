@@ -66,12 +66,15 @@ COMMANDS = {
     "smali": "Decompiles APK into smali code (-i input.apk -o output_folder)",
     "decode-xml": "Decodes binary XML files in an APK (-i input.apk)",
     "find-oncreate": "Finds the onCreate methods inside smali code (-i input.apk)",
-    "find-api": "Finds API calls used in an APK (-i input.apk or -i smali_file(recomended))",
+    "find-api": "Finds API calls used in an APK (-i input.apk or -i smali_file(recommended))",
     "scan-vulnerabilities": "Scans APK for security vulnerabilities (-i input.apk)",
     "scan-permissions": "Lists all permissions requested by an APK (-i input.apk)",
     "catch_rat": "Detects potential RAT (Remote Access Trojan) in APK (-i input.apk)",
     "extract-java": "Extracts Java source code from an APK (-i input.apk -o output_folder -c [optional])",
     "extract-sensitive": "Extracts sensitive information from APK (-i input.apk -o output.json)",
+    "change-icon": "Modifies the APK icon (-i input.apk -o new_icon.png)",
+    "change-name": "Changes the application name (-i input.apk -o new_name)",
+    "change-package": "Modifies the package name (-i input.apk -o new_package_name)",
     "help": "Displays this help menu",
     "exit": "Exits the interactive mode",
 }
@@ -186,12 +189,23 @@ def interactive_shell():
 
                     extract_java(input_file, output_file, compress)
                 elif command == "extract-sensitive":
-                    from modules.extract_sensitive import \
-                        extract_sensitive_data
+                    from modules.extract_sensitive import extract_sensitive_data
 
                     if not output_file:
                         output_file = "sensitive_report.json"
                     extract_sensitive_data(input_file, output_file)
+                elif command == "change-icon":
+                    from modules.icon_editor import change_icon
+
+                    change_icon(input_file, output_file)
+                elif command == "change-name":
+                    from modules.name_editor import change_app_name
+
+                    change_app_name(input_file, output_file)
+                elif command == "change-package":
+                    from modules.package_editor import change_package_name
+
+                    change_package_name(input_file, output_file)
                 else:
                     logging.error(f"{RED}[!] Unknown command!{RESET}")
             except Exception as e:

@@ -1,12 +1,13 @@
 import argparse
 import logging
 import sys
-
-from modules import (analyzer, api_finder, builder, catch_rat,
-                     extract_sensitive, extractor, java_extractor,
-                     manifest_editor, permission_scanner, signer, smali_tools,
-                     vulnerability_scanner, xml_decoder)
+from modules import (
+    analyzer, api_finder, builder, catch_rat, extract_sensitive, extractor,
+    java_extractor, manifest_editor, permission_scanner, signer, smali_tools,
+    vulnerability_scanner, xml_decoder
+)
 from modules.interactive_mode import interactive_shell
+from modules.apk_modifier import APKModifier  # ✅ Importing the new module
 
 # ANSI color codes for terminal output styling
 RED = "\033[91m"
@@ -21,30 +22,18 @@ RESET = "\033[0m"
 # Logging setup
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 
-
 def main():
     parser = argparse.ArgumentParser(
         description="APKnife: Advanced APK analysis & modification tool"
     )
-
+    
     parser.add_argument(
         "command",
         choices=[
-            "extract",
-            "build",
-            "sign",
-            "analyze",
-            "edit-manifest",
-            "smali",
-            "decode-xml",
-            "find-oncreate",
-            "find-api",
-            "scan-vulnerabilities",
-            "scan-permissions",
-            "catch_rat",
-            "extract-java",
-            "interactive",
-            "extract-sensitive",
+            "extract", "build", "sign", "analyze", "edit-manifest", "smali",
+            "decode-xml", "find-oncreate", "find-api", "scan-vulnerabilities",
+            "scan-permissions", "catch_rat", "extract-java", "interactive",
+            "extract-sensitive", "modify-apk"  # ✅ Added modify-apk command
         ],
         help="Command to execute",
     )
@@ -52,11 +41,14 @@ def main():
     parser.add_argument("-i", "--input", help="Input APK file")
     parser.add_argument("-o", "--output", help="Output file/directory")
     parser.add_argument(
-        "-c",
-        "--compress",
-        action="store_true",
+        "-c", "--compress", action="store_true",
         help="Compress extracted Java files into a ZIP archive",
     )
+
+    # Additional arguments for APK modification
+    parser.add_argument("--name", help="New app name")
+    parser.add_argument("--icon", help="New app icon (resized automatically)")
+    parser.add_argument("--package", help="New package name")
 
     args = parser.parse_args()
 
@@ -88,7 +80,7 @@ def main():
         elif args.command == "find-api":
             api_finder.find_api_calls(args.input)
         elif args.command == "scan-vulnerabilities":
-            vulnerability_scanner.scan_apk(args.input)  # ✅ استدعاء موديول الفحص
+            vulnerability_scanner.scan_apk(args.input)
         elif args.command == "scan-permissions":
             permission_scanner.scan_permissions(args.input)
         elif args.command == "catch_rat":
@@ -99,12 +91,16 @@ def main():
             if not args.output:
                 args.output = "sensitive_report.json"
             extract_sensitive.extract_sensitive_data(args.input, args.output)
+        elif args.command == "modify-apk":  # ✅ Handle APK modification
+            logging.info(f"{GREEN}[*] Modifying APK: {args.input}{RESET}")
+            modifier = APKModifier(args.input, args.name, args.icon, args.package)
+            modifier.run()
         else:
             logging.error(f"{RED}[!] Unknown command!{RESET}")
+    
     except Exception as e:
         logging.error(f"{RED}[!] Error executing `{args.command}`: {e}{RESET}")
         sys.exit(1)
-
 
 if __name__ == "__main__":
     main()
