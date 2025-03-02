@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "apknife"
+version = "1.0.0"
+authors = [
+    {name = "Your Name", email = "your_email@example.com"},
+]
+description = "Advanced APK analysis & modification tool"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.6"
+dependencies = [
+    "prompt_toolkit",
+]
+
+[project.scripts]
+apknife = "apknife.apknife:main"
