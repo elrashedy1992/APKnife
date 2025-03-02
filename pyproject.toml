@@ -9,11 +9,15 @@ description = "APKnife: A powerful Android penetration testing tool"
 authors = [{name = "mrnightmare", email = "hmjani18@gmail.com"}]
 license = {file = "LICENSE"}
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.13"
 
 
 dependencies = [
+HEAD
     "setuptools",
+=======
+    "setuptools", 
+7b5ab0d (update)
 ]
 
 [tool.setuptools]

@@ -49,6 +49,8 @@ keytool
 git clone https://github.com/elrashedy1992/APKnife.git
 cd APKnife
 pip install -r requirements.txt
+cd apknife
+python3 apknife.py -h
 ```
 
 ---
