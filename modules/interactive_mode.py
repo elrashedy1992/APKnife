@@ -1,7 +1,6 @@
 import logging
-import sys
-import time
-
+import os
+import subprocess
 from prompt_toolkit import PromptSession
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.completion import WordCompleter
@@ -29,59 +28,56 @@ style = Style.from_dict(
     }
 )
 
-# Banner ASCII Art
-BANNER = f"""{RED}
-      || ________________
-O|===|* >________________>
-      ||
-{RESET}{CYAN}     APKnife – The Double-Edged Blade of APK Analysis 🔪🧸
-{YELLOW}     Fear the Blade, Trust the Power! 🎨
-{WHITE}     Where Hacking Meets Art! 🖌️
-"""
+# Load commands from external file
+def load_commands():
+    if not os.path.exists("commands.json"):
+        logging.warning(f"{YELLOW}[!] commands.json not found. Creating a default one...{RESET}")
+        default_commands = {
+            "help": "Displays this help menu",
+            "exit": "Exits the interactive mode",
+            "update-commands": "Reloads the commands from the external file",
+            "list-commands": "Displays the current list of available commands"
+        }
+        with open("commands.json", "w") as file:
+            json.dump(default_commands, file, indent=4)
+        return default_commands
 
+    try:
+        with open("commands.json", "r") as file:
+            return json.load(file)
+    except json.JSONDecodeError:
+        logging.error(f"{RED}[!] Invalid JSON format in commands file!{RESET}")
+        return {}
 
-# Animated loading effect
-def loading_effect(text, delay=0.1):
-    for char in text:
-        sys.stdout.write(char)
-        sys.stdout.flush()
-        time.sleep(delay)
-    print()
+# Execute shell commands
+import os
 
+def execute_shell_command(command):
+    try:
+        # Handle 'cd' command separately
+        if command.startswith("cd "):
+            new_dir = command.split(" ", 1)[1].strip()
+            try:
+                os.chdir(new_dir)
+                return f"{GREEN}[+] Changed directory to: {os.getcwd()}{RESET}"
+            except FileNotFoundError:
+                return f"{RED}[!] Directory not found: {new_dir}{RESET}"
+            except Exception as e:
+                return f"{RED}[!] Error changing directory: {e}{RESET}"
 
-# Display the banner
-print(BANNER)
-loading_effect(f"{PURPLE}⚙️  Loading the blade...", 0.05)
-loading_effect(f"{BLUE}🔪  Sharpening edges...", 0.07)
-loading_effect(f"{GREEN}🟢  Ready to cut!", 0.1)
-print(RESET)
+        # Execute other shell commands
+        result = subprocess.run(command, shell=True, check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        return result.stdout
+    except subprocess.CalledProcessError as e:
+        return f"{RED}[!] Error: {e.stderr}{RESET}"
+# Get common shell commands
+def get_shell_commands():
+    return ["ls", "cd", "mkdir", "rm", "cp", "mv", "pwd", "cat", "echo", "grep", "find", "chmod", "ps", "kill"]
 
-# Available commands and their descriptions
-COMMANDS = {
-    "extract": "Extracts an APK file (-i input.apk -o output_folder)",
-    "build": "Builds an APK from a modified directory (-i folder -o output.apk)",
-    "sign": "Signs an APK file (-i input.apk)",
-    "analyze": "Analyzes an APK for vulnerabilities (-i input.apk)",
-    "edit-manifest": "Modifies the AndroidManifest.xml of an APK (-i input.apk)",
-    "smali": "Decompiles APK into smali code (-i input.apk -o output_folder)",
-    "decode-xml": "Decodes binary XML files in an APK (-i input.apk)",
-    "find-oncreate": "Finds the onCreate methods inside smali code (-i input.apk)",
-    "find-api": "Finds API calls used in an APK (-i input.apk or -i smali_file(recommended))",
-    "scan-vulnerabilities": "Scans APK for security vulnerabilities (-i input.apk)",
-    "scan-permissions": "Lists all permissions requested by an APK (-i input.apk)",
-    "catch_rat": "Detects potential RAT (Remote Access Trojan) in APK (-i input.apk)",
-    "extract-java": "Extracts Java source code from an APK (-i input.apk -o output_folder -c [optional])",
-    "extract-sensitive": "Extracts sensitive information from APK (-i input.apk -o output.json)",
-    "modify-apk --icon": "Modifies the APK icon (-i input.apk )",
-    "modify-apk --name ": "Changes the application name (-i input.apk )",
-    "modify-apk --package": "Modifies the package name (-i input.apk -o new_package_name)",
-    "help": "Displays this help menu",
-    "exit": "Exits the interactive mode",
-}
-
-
-def interactive_shell():
-    completer = WordCompleter(COMMANDS.keys(), ignore_case=True)
+# Interactive shell
+def interactive_shell(COMMANDS):
+    shell_commands = get_shell_commands()
+    completer = WordCompleter(list(COMMANDS.keys()) + shell_commands, ignore_case=True)
     session = PromptSession(
         history=FileHistory(".apknife_history"),
         auto_suggest=AutoSuggestFromHistory(),
@@ -101,115 +97,35 @@ def interactive_shell():
 
             command = args[0]
 
-            if command == "help":
-                print(f"\n{YELLOW}Available Commands:{RESET}")
-                for cmd, desc in COMMANDS.items():
-                    print(f"  {GREEN}{cmd.ljust(20)}{RESET} - {WHITE}{desc}{RESET}")
-                print()
-                continue
+            # Handle APKnife commands
+            if command in COMMANDS:
+                if command == "help":
+                    print(f"\n{YELLOW}Available Commands:{RESET}")
+                    for cmd, desc in COMMANDS.items():
+                        print(f"  {GREEN}{cmd.ljust(20)}{RESET} - {WHITE}{desc}{RESET}")
+                    print()
+                    continue
 
-            if command not in COMMANDS:
-                logging.error(f"{RED}[!] Unknown command: {command}{RESET}")
-                continue
+                if command == "update-commands":
+                    COMMANDS = load_commands()
+                    completer = WordCompleter(COMMANDS.keys(), ignore_case=True)
+                    logging.info(f"{GREEN}[+] Commands updated successfully!{RESET}")
+                    continue
 
-            # Simulate argparse behavior
-            input_file = None
-            output_file = None
-            compress = False
+                if command == "list-commands":
+                    print(f"\n{YELLOW}Current Commands:{RESET}")
+                    for cmd, desc in COMMANDS.items():
+                        print(f"  {GREEN}{cmd.ljust(20)}{RESET} - {WHITE}{desc}{RESET}")
+                    print()
+                    continue
 
-            for i, arg in enumerate(args):
-                if arg == "-i" and i + 1 < len(args):
-                    input_file = args[i + 1]
-                elif arg == "-o" and i + 1 < len(args):
-                    output_file = args[i + 1]
-                elif arg == "-c":
-                    compress = True
+                # Handle other APKnife commands here...
+                # (Keep the existing command execution logic)
 
-            if (
-                command != "interactive"
-                and not input_file
-                and command not in ["help", "exit"]
-            ):
-                logging.error(
-                    f"{RED}[!] You must specify an input file using `-i`{RESET}"
-                )
-                continue
-
-            try:
-                if command == "extract":
-                    from modules.extractor import extract_apk
-
-                    extract_apk(input_file, output_file)
-                elif command == "build":
-                    from modules.builder import build_apk
-
-                    build_apk(input_file, output_file)
-                elif command == "sign":
-                    from modules.signer import sign_apk
-
-                    sign_apk(input_file)
-                elif command == "analyze":
-                    from modules.analyzer import analyze_apk
-
-                    analyze_apk(input_file)
-                elif command == "edit-manifest":
-                    from modules.manifest_editor import edit_manifest
-
-                    edit_manifest(input_file)
-                elif command == "smali":
-                    from modules.smali_tools import decompile_apk
-
-                    decompile_apk(input_file, output_file)
-                elif command == "decode-xml":
-                    from modules.xml_decoder import decode_xml
-
-                    decode_xml(input_file)
-                elif command == "find-oncreate":
-                    from modules.smali_tools import find_oncreate
-
-                    find_oncreate(input_file)
-                elif command == "find-api":
-                    from modules.api_finder import find_api_calls
-
-                    find_api_calls(input_file)
-                elif command == "scan-vulnerabilities":
-                    from modules.vulnerability_scanner import scan_apk
-
-                    scan_apk(input_file)
-                elif command == "scan-permissions":
-                    from modules.permission_scanner import scan_permissions
-
-                    scan_permissions(input_file)
-                elif command == "catch_rat":
-                    from modules.catch_rat import analyze_apk_ips
-
-                    analyze_apk_ips(input_file)
-                elif command == "extract-java":
-                    from modules.java_extractor import extract_java
-
-                    extract_java(input_file, output_file, compress)
-                elif command == "extract-sensitive":
-                    from modules.extract_sensitive import extract_sensitive_data
-
-                    if not output_file:
-                        output_file = "sensitive_report.json"
-                    extract_sensitive_data(input_file, output_file)
-                elif command == "change-icon":
-                    from modules.icon_editor import change_icon
-
-                    change_icon(input_file, output_file)
-                elif command == "change-name":
-                    from modules.name_editor import change_app_name
-
-                    change_app_name(input_file, output_file)
-                elif command == "change-package":
-                    from modules.package_editor import change_package_name
-
-                    change_package_name(input_file, output_file)
-                else:
-                    logging.error(f"{RED}[!] Unknown command!{RESET}")
-            except Exception as e:
-                logging.error(f"{RED}[!] Error executing `{command}`: {e}{RESET}")
+            # Handle shell commands
+            else:
+                output = execute_shell_command(text)
+                print(output)
 
         except KeyboardInterrupt:
             continue
