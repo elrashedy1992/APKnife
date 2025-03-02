@@ -119,13 +119,18 @@ python3 apknife.py modify-apk --name -i app.apk
 
 Replace the default app icon with a new one:
 ```
-python3 apknife.py modify-apk --icon -i app.apk
+python3 apknife.py modify-apk --icon new_icon.png -i app.apk
 ```
 🟢 Modify Package Name
 
 Change the package name of an APK for customization:
 ```
 python3 apknife.py modify-apk --package com.example.example -i app.apk
+```
+
+🟢 scan permissions
+```
+python3 apknife.py scan_permissions -i target.apk
 ```
 
 ---
