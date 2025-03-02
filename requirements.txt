@@ -1,7 +1,6 @@
 alembic==1.14.1
 androguard==3.3.5
 apkInspector==1.3.2
-apknife @ file:///home/kaboos/APKnife
 asn1crypto==1.5.1
 asttokens==3.0.0
 AxmlParserPY==0.1

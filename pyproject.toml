@@ -1,20 +1,23 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "apknife"
-version = "1.0.0"
-authors = [
-    {name = "Your Name", email = "your_email@example.com"},
-]
-description = "Advanced APK analysis & modification tool"
-readme = "README.md"
+version = "1.0.2"
+description = "APKnife: A powerful Android penetration testing tool"
+authors = [{name = "mrnightmare", email = "hmjani18@gmail.com"}]
 license = {file = "LICENSE"}
-requires-python = ">=3.6"
+readme = "README.md"
+requires-python = ">=3.7"
+
+
 dependencies = [
-    "prompt_toolkit",
+    "setuptools",  # مطلوب لقراءة الملفات
 ]
 
-[project.scripts]
-apknife = "apknife.apknife:main"
+[tool.setuptools]
+packages = ["apknife"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = "requirements.txt"}
