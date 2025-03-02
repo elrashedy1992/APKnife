@@ -8,7 +8,6 @@ from modules import (
 )
 from modules.interactive_mode import interactive_shell
 from modules.apk_modifier import APKModifier  # ✅ Importing the new module
-
 # ANSI color codes for terminal output styling
 RED = "\033[91m"
 GREEN = "\033[92m"
@@ -46,10 +45,9 @@ def main():
     )
 
     # Additional arguments for APK modification
-    parser.add_argument("--name", help="New app name")
-    parser.add_argument("--icon", help="New app icon (resized automatically)")
-    parser.add_argument("--package", help="New package name")
-
+    parser.add_argument("--name", help="New app name python3 apknife.py modify-apk --name com.kaboos.help --name nightmare -i payload_for_test.apk")
+    parser.add_argument("--icon", help="New app icon (resized automatically example python3 apknife.py modify-apk --icaon icon.png --name nightmare -i payload_for_test.apk)")
+    parser.add_argument("--package", help="New package name example python3 apknife.py modify-apk --package com.kaboos.help --name nightmare -i targe..apk")
     args = parser.parse_args()
 
     # Ensure input file is provided for required commands

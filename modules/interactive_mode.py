@@ -72,9 +72,9 @@ COMMANDS = {
     "catch_rat": "Detects potential RAT (Remote Access Trojan) in APK (-i input.apk)",
     "extract-java": "Extracts Java source code from an APK (-i input.apk -o output_folder -c [optional])",
     "extract-sensitive": "Extracts sensitive information from APK (-i input.apk -o output.json)",
-    "change-icon": "Modifies the APK icon (-i input.apk -o new_icon.png)",
-    "change-name": "Changes the application name (-i input.apk -o new_name)",
-    "change-package": "Modifies the package name (-i input.apk -o new_package_name)",
+    "modify-apk --icon": "Modifies the APK icon (-i input.apk )",
+    "modify-apk --name ": "Changes the application name (-i input.apk )",
+    "modify-apk --package": "Modifies the package name (-i input.apk -o new_package_name)",
     "help": "Displays this help menu",
     "exit": "Exits the interactive mode",
 }

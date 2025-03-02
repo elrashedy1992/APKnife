@@ -45,11 +45,11 @@ keytool
 
 
 📥 Clone the Repository & Install Dependencies:
-
+```
 git clone https://github.com/elrashedy1992/APKnife.git
 cd APKnife
 pip install -r requirements.txt
-
+```
 
 ---
 
@@ -58,9 +58,9 @@ pip install -r requirements.txt
 1️⃣ Interactive Mode
 
 To enter interactive mode, run:
-
+```
 python3 apknife.py interactive
-
+```
 This will display a command-line interface where you can execute APKnife commands directly.
 
 
@@ -76,57 +76,57 @@ This will display a command-line interface where you can execute APKnife command
 🟢 Extract APK Contents
 
 Extracts an APK into a specified folder for modification.
-
+```
 python3 apknife.py extract -i target.apk -o extracted/
-
+```
 🟢 Modify and Rebuild APK
 
 After making changes inside the extracted folder, rebuild the APK:
-
+```
 python3 apknife.py build -i extracted/ -o modified.apk
-
+```
 🟢 Sign an APK
 
 To sign the modified APK before installing it on a device:
-
+```
 python3 apknife.py sign -i modified.apk
-
+```
 🟢 Analyze APK for Vulnerabilities
 
 Scan an APK for security issues:
-
+```
 python3 apknife.py analyze -i target.apk
-
+```
 🟢 Detect Remote Access Trojans (RATs)
 
 Identify potential malware and backdoors:
-
+```
 python3 apknife.py catch_rat -i malicious.apk
-
+```
 🟢 Extract Java Source Code
 
 Decompile and retrieve Java code from an APK:
-
+```
 python3 apknife.py extract-java -i target.apk -o src_folder
-
+```
 🟢 Change APK Name
 
 Modify the displayed app name inside the APK:
-
-python3 apknife.py change-name -i app.apk -o "NewAppName"
-
+```
+python3 apknife.py modify-apk --name -i app.apk
+```
 🟢 Change APK Icon
 
 Replace the default app icon with a new one:
-
-python3 apknife.py change-icon -i app.apk -o new_icon.png
-
+```
+python3 apknife.py modify-apk --icon -i app.apk
+```
 🟢 Modify Package Name
 
 Change the package name of an APK for customization:
-
-python3 apknife.py change-package -i app.apk -o com.new.package
-
+```
+python3 apknife.py modify-apk --package com.example.example -i app.apk
+```
 
 ---
 
