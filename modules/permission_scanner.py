@@ -2,7 +2,7 @@ import logging
 import xml.etree.ElementTree as ET
 import zipfile
 
-from androguard.core.bytecodes.axml import AXMLPrinter
+from androguard.core.axml import AXMLPrinter
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 

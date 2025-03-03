@@ -4,7 +4,7 @@ import tempfile
 import xml.etree.ElementTree as ET
 import zipfile
 
-from androguard.core.bytecodes.axml import AXMLPrinter
+from androguard.core.axml import AXMLPrinter
 
 
 def extract_manifest_from_apk(apk_path, output_dir):
