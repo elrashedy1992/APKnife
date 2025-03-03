@@ -66,7 +66,7 @@ This will display a command-line interface where you can execute APKnife command
 
 ---
 
-📌 Available Commands & Usage
+📌 some of Available Commands & Usage
 
 
 ---
