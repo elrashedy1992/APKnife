@@ -31,7 +31,7 @@ def extract_apk(apk_path: str, output_dir: str):
     try:
         with tempfile.TemporaryDirectory() as temp_dir:
             # Extract APK using apktool
-            command = f"apktool d -f {apk_path} -o {temp_dir}"
+            command = f"apktool d -f -r {apk_path} -o {temp_dir}"
             subprocess.run(command, shell=True, check=True)
 
             # Handle advanced protections like obfuscation
