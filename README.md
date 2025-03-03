@@ -208,7 +208,7 @@ cargo --version
 rustc --version
 ```
 
-you are ready know to use APKnife
+you are ready now to use APKnife
 
 
 📥 Clone the Repository & Install Dependencies:
