@@ -117,10 +117,12 @@ If you face issues during the installation of apknife or any library that depend
 Rust Installation Issues: Ensure you’ve correctly installed rust via rustup or your system’s package manager.
 
 Virtual Environment Conflicts: If there are conflicts between Python environments, delete the old virtual environment and recreate a new one:
-
+```
 rm -rf venv
 python3 -m venv venv
-source venv/bin/activate   # On Linux/macOS
+```
+source venv/bin/activate  
+```
 
 
 3. Verifying Installed Versions:
@@ -128,13 +130,13 @@ source venv/bin/activate   # On Linux/macOS
 To make sure everything is installed correctly:
 
 Check the Python version:
-
+```
 python --version
-
+```
 Check the Rust version:
-
+```
 rustc --version
-
+```
 
 Additional Notes:
 
