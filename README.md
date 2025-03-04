@@ -242,19 +242,19 @@ python3 apknife.py modify-apk --name new_name --package new.package.name --icon 
 python3 apknife.py scan_permissions -i target.apk
 ```
 👇help menu👇
-````
 
----python3 apknife.py -h
+---
+python3 apknife.py -h
 usage: apknife.py [-h] [-i INPUT] [-o OUTPUT] [-c] [--name NAME] [--icon ICON]
                   [--package PACKAGE]
                   {extract,build,sign,analyze,edit-manifest,smali,decode-xml,find-oncreate,find-api,scan-vulnerabilities,scan-permissions,catch_rat,extract-java,interactive,extract-sensitive,modify-apk}
-
+---
 APKnife: Advanced APK analysis & modification tool
 
 positional arguments:
   {extract,build,sign,analyze,edit-manifest,smali,decode-xml,find-oncreate,find-api,scan-vulnerabilities,scan-permissions,catch_rat,extract-java,interactive,extract-sensitive,modify-apk}
                         Command to execute
-
+---
 options:
   -h, --help            show this help message and exit
   -i, --input INPUT     Input APK file
@@ -263,7 +263,7 @@ options:
   --name NAME           New app name
   --icon ICON           New app icon (resized automatically)
   --package PACKAGE     New package name
-```
+----
 
 ⚠️ Legal Disclaimer
 
