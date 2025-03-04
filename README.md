@@ -184,11 +184,11 @@ pip install -r requirements.txt
 📜 Usage
 
 🖥️ Interactive Mode
-
+---
 To enter interactive mode, run:
-
+```
 python3 apknife.py interactive
-
+```
 This will launch a command-line interface for executing APKnife commands.
 
 
@@ -268,20 +268,18 @@ options:
 ⚠️ Legal Disclaimer
 
 This tool is designed for educational and security research purposes only. Unauthorized use of APKnife on third-party applications without permission is illegal. The developers are not responsible for any misuse.
-
+--
 
 ---
 
 📜 License
 
 APKnife is released under the MIT License – You are free to modify and distribute it for legal use.
-
+--
 
 ---
 
 💡 Contributions & Support
 
 🚀 Contributions are welcome! Fork the repo, submit pull requests, and report issues. Let's make APKnife even better!
-
-
 ---
