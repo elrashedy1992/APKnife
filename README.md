@@ -248,13 +248,13 @@ python3 apknife.py -h
 usage: apknife.py [-h] [-i INPUT] [-o OUTPUT] [-c] [--name NAME] [--icon ICON]
                   [--package PACKAGE]
                   {extract,build,sign,analyze,edit-manifest,smali,decode-xml,find-oncreate,find-api,scan-vulnerabilities,scan-permissions,catch_rat,extract-java,interactive,extract-sensitive,modify-apk}
----
+
 APKnife: Advanced APK analysis & modification tool
 
 positional arguments:
   {extract,build,sign,analyze,edit-manifest,smali,decode-xml,find-oncreate,find-api,scan-vulnerabilities,scan-permissions,catch_rat,extract-java,interactive,extract-sensitive,modify-apk}
                         Command to execute
----
+
 options:
   -h, --help            show this help message and exit
   -i, --input INPUT     Input APK file
@@ -263,12 +263,12 @@ options:
   --name NAME           New app name
   --icon ICON           New app icon (resized automatically)
   --package PACKAGE     New package name
-----
+
 
 ⚠️ Legal Disclaimer
 
 This tool is designed for educational and security research purposes only. Unauthorized use of APKnife on third-party applications without permission is illegal. The developers are not responsible for any misuse.
---
+
 
 ---
 
