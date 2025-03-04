@@ -201,7 +201,7 @@ python3 apknife.py extract -i target.apk -o extracted/
 🟢 Modify & Rebuild APK
 ```
 python3 apknife.py build -i extracted/ -o modified.apk
-
+``|
 🟢 Sign APK
 ```
 python3 apknife.py sign -i modified.apk
