@@ -275,11 +275,11 @@ This tool is designed for educational and security research purposes only. Unaut
 📜 License
 
 APKnife is released under the MIT License – You are free to modify and distribute it for legal use.
---
+
 
 ---
 
 💡 Contributions & Support
 
 🚀 Contributions are welcome! Fork the repo, submit pull requests, and report issues. Let's make APKnife even better!
----
+
