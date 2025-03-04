@@ -1,4 +1,6 @@
-
+<p align="center">
+  <img src="assets/cover.png" alt="APKnife Cover" width="100%">
+</p>
 ---
 
 APKnife – The Double-Edged Blade of APK Analysis 🔪
@@ -200,8 +202,9 @@ python3 apknife.py extract -i target.apk -o extracted/
 ```
 🟢 Modify & Rebuild APK
 ```
-python3 apknife.py build -i extracted/ -o modified.apk
-``|
+python3 apknife.py build -i
+extracted/ -o modified.apk
+```
 🟢 Sign APK
 ```
 python3 apknife.py sign -i modified.apk
