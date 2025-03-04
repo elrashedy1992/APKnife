@@ -230,6 +230,7 @@ python3 apknife.py modify-apk --icon new_icon.png -i app.apk
 ```
 python3 apknife.py modify-apk --package com.example.example -i app.apk
 ```
+
 ```
 python3 apknife.py modify-apk --name new_name --package new.package.name --icon anysize.any -o modified_apk.apk
 ```
@@ -281,6 +282,3 @@ APKnife is released under the MIT License – You are free to modify and distrib
 
 
 ---
-
-This version improves readability, maintains professional formatting, and keeps everything structured while adding a polished and engaging tone.
-
