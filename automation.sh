@@ -67,13 +67,13 @@ function fix_security_issues() {
     echo -e "${GREEN}✅ Security checks completed.${NC}"
 }
 
-# 4️⃣ Update pip
-function update_pip() {
-    echo -e "${YELLOW}🔄 Updating pip to the latest version...${NC}"
+# 4️⃣ Update pip & setuptools
+function update_pip_and_setuptools() {
+    echo -e "${YELLOW}🔄 Updating pip and setuptools to the latest version...${NC}"
     if [ -n "$VIRTUAL_ENV" ]; then
-        pip install --upgrade pip
+        pip install --upgrade pip setuptools
     else
-        pip install --upgrade pip --user || sudo pip install --upgrade pip
+        pip install --upgrade pip setuptools --user || sudo pip install --upgrade pip setuptools
     fi
 }
 
@@ -102,6 +102,9 @@ function fix_requirements() {
 # 6️⃣ Install requirements safely
 function install_requirements() {
     echo -e "${YELLOW}📦 Installing dependencies from requirements.txt...${NC}"
+    
+    update_pip_and_setuptools  # Ensure setuptools is up to date to prevent conflicts
+    
     if [ -n "$VIRTUAL_ENV" ]; then
         pip install -r requirements.txt --upgrade --force-reinstall
     else
@@ -127,9 +130,16 @@ function update_version() {
     echo -e "${GREEN}✅ Version updated.${NC}"
 }
 
-# 9️⃣ Sync with GitHub
+# 9️⃣ Sync with GitHub (Deletes .apknife_history before push)
 function sync_with_github() {
     echo -e "${YELLOW}🔄 Syncing with GitHub...${NC}"
+    
+    # Remove the history file
+    if [ -f "apknife/.apknife_history" ]; then
+        echo -e "${YELLOW}🗑️ Deleting apknife/.apknife_history...${NC}"
+        rm -f apknife/.apknife_history
+    fi
+
     git checkout main
     git pull --rebase origin main
     git add .
