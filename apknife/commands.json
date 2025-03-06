@@ -16,6 +16,7 @@
     "modify-apk --icon": "Modifies the APK icon (-i input.apk)",
     "modify-apk --name": "Changes the application name (-i input.apk)",
     "modify-apk --package": "Modifies the package name (-i input.apk -o new_package_name)",
+    "extract-dex": "Extract DEX files from an APK without fully decompiling it"
     "update-commands": "Reloads the commands from the external file",
     "list-commands": "Displays the current list of available commands",
     "help": "Displays this help menu",
