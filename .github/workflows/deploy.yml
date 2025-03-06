@@ -1,0 +1,34 @@
+name: Deploy to PyPI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🔄 Checkout code from GitHub
+        uses: actions/checkout@v3
+
+      - name: ⚙️ Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: 📦 Install necessary tools
+        run: |
+          pip install --upgrade setuptools wheel twine
+
+      - name: 🏗️ Build the package
+        run: |
+          python setup.py sdist bdist_wheel
+
+      - name: 🚀 Upload package to PyPI
+        env:
+          PYPI_USERNAME: __token__
+          PYPI_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: |
+          twine upload dist/* -u "$PYPI_USERNAME" -p "$PYPI_PASSWORD"
