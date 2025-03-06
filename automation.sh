@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Define colors for output
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
@@ -22,7 +23,7 @@ echo -e "===========================================${NC}"
 # 1️⃣ Fix Project Structure
 function fix_project_structure() {
     echo -e "${YELLOW}🔍 Checking project structure...${NC}"
-    
+
     if [ -d "src/apknife" ]; then
         echo -e "${YELLOW}🔄 Moving files from src/ to root...${NC}"
         mv src/apknife/* apknife/
@@ -76,17 +77,25 @@ function update_pip() {
     fi
 }
 
-# 5️⃣ Fix Issues in requirements.txt
+# 5️⃣ Generate Requirements Using pipreqs
 function fix_requirements() {
-    echo -e "${YELLOW}🔄 Checking package compatibility in requirements.txt...${NC}"
-    update_pip
-    echo -e "${YELLOW}📄 Freezing exact versions in requirements.txt...${NC}"
-    pip freeze > requirements.txt
+    echo -e "${YELLOW}🔄 Generating requirements.txt using pipreqs...${NC}"
+
+    # Ensure pipreqs is installed
+    if ! command -v pipreqs &> /dev/null; then
+        echo -e "${YELLOW}📦 Installing pipreqs...${NC}"
+        pip install pipreqs
+    fi
+
+    # Run pipreqs to generate requirements.txt based on the project code
+    pipreqs . --force
+
     echo -e "${YELLOW}🔍 Checking for version conflicts...${NC}"
     if ! pip check; then
         echo -e "${YELLOW}⚠️ Resolving package conflicts...${NC}"
         install_requirements
     fi
+
     echo -e "${GREEN}✅ Requirements are updated.${NC}"
 }
 
