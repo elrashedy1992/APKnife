@@ -70,10 +70,10 @@ function fix_security_issues() {
 # 4️⃣ Fix setuptools conflicts & update pip
 function update_pip_and_setuptools() {
     echo -e "${YELLOW}🔄 Fixing setuptools conflicts...${NC}"
-    
+
     # Uninstall all setuptools versions to prevent conflicts
     pip uninstall -y setuptools
-    
+
     # Install the latest compatible version automatically
     pip install --upgrade pip setuptools
 
@@ -97,19 +97,17 @@ function fix_requirements() {
     sed -i '/setuptools/d' requirements.txt
 
     # Remove duplicate dependencies
-    sort -u -o requirements.txt requirements.txt
-
+    sort -u -o requirements.txt requirements.txt                                                          
     echo -e "${YELLOW}📦 Installing dependencies...${NC}"
     install_requirements
     echo -e "${GREEN}✅ Requirements are updated.${NC}"
 }
 
-# 6️⃣ Install requirements safely
+# 6️⃣ Install requirements safely                                                                           
 function install_requirements() {
     echo -e "${YELLOW}📦 Installing dependencies from requirements.txt...${NC}"
-    
-    update_pip_and_setuptools  # Ensure setuptools is up to date to prevent conflicts
-    
+
+    update_pip_and_setuptools  # Ensure setuptools is up to date to prevent conflicts                     
     pip install -r requirements.txt --upgrade --force-reinstall
 }
 
@@ -134,7 +132,7 @@ function update_version() {
 # 9️⃣ Sync with GitHub (Deletes .apknife_history before push)
 function sync_with_github() {
     echo -e "${YELLOW}🔄 Syncing with GitHub...${NC}"
-    
+
     # Remove the history file
     if [ -f "apknife/.apknife_history" ]; then
         echo -e "${YELLOW}🗑️ Deleting apknife/.apknife_history...${NC}"
