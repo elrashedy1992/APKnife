@@ -34,15 +34,15 @@
 [1m  Scanning dependencies[0m in your [1menvironment:[0m
 
   -> /root/venv/lib/python3.13/site-packages/setuptools/_vendor
-  -> /root/venv/bin
   -> /root/venv/lib/python3.13/site-packages
-  -> /usr/lib/python3.13
   -> /usr/lib/python3.13/lib-dynload
+  -> /usr/lib/python3.13
+  -> /root/venv/bin
   -> /usr/lib/python313.zip
 
   Using [1mopen-source vulnerability database[0m
 [1m  Found and scanned 113 packages[0m
-  Timestamp [1m2025-03-06 03:49:01[0m
+  Timestamp [1m2025-03-06 04:00:46[0m
 [1m  2[0m[1m vulnerabilities reported[0m
 [1m  0[0m[1m vulnerabilities ignored[0m
 
@@ -54,7 +54,8 @@
 [1m   Vulnerability ID: [0m51668
 [1m   Affected spec: [0m<2.0.0b1
 [1m   ADVISORY: [0mSqlalchemy 2.0.0b1 avoids leaking cleartext passwords to
-   the open for careless uses of str(engine.URL()) in logs and...
+   the open for careless uses of str(engine.URL()) in logs and
+   prints.https://github.com/sqlalchemy/sqlalchemy/pull/8563
 [1m   PVE-2022-51668[0m
 [1m   For more information about this vulnerability, visit
    [0mhttps://data.safetycli.com/v/51668/97c[0m
@@ -66,7 +67,8 @@
 [1m   Vulnerability ID: [0m75180
 [1m   Affected spec: [0m<25.0
 [1m   ADVISORY: [0mPip solves a security vulnerability that previously
-   allowed maliciously crafted wheel files to execute unauthorized code...
+   allowed maliciously crafted wheel files to execute unauthorized code
+   during installation.
 [1m   PVE-2025-75180[0m
 [1m   For more information about this vulnerability, visit
    [0mhttps://data.safetycli.com/v/75180/97c[0m

@@ -1,0 +1,6 @@
+{
+    "help": "Displays this help menu",
+    "exit": "Exits the interactive mode",
+    "update-commands": "Reloads the commands from the external file",
+    "list-commands": "Displays the current list of available commands"
+}

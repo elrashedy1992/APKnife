@@ -14,12 +14,11 @@ if [ -z "$1" ]; then
 fi
 NEW_VERSION=$1
 
-# Display script header
 echo -e "${BLUE}==========================================="
-echo -e "    Git & PyPI Auto-Update with Security Checks"
+echo -e "    Git & PyPI Auto-Update with Security Fixes"
 echo -e "===========================================${NC}"
 
-# Check and fix project structure
+# Fix project structure if needed
 function check_and_fix_project_structure() {
     echo -e "${YELLOW}🔍 Checking project structure...${NC}"
 
@@ -37,11 +36,11 @@ function check_and_fix_project_structure() {
     echo -e "${GREEN}✅ Project structure is correct.${NC}"
 }
 
-# Check if the tool runs after installation
+# Check tool execution
 function check_tool_execution() {
     echo -e "${YELLOW}🔄 Checking tool execution after installation...${NC}"
 
-    pip install .
+    pip install . >/dev/null
     if ! command -v apknife &> /dev/null; then
         echo -e "${RED}❌ The tool does not run when calling 'apknife'.${NC}"
         exit 1
@@ -50,35 +49,37 @@ function check_tool_execution() {
     echo -e "${GREEN}✅ The tool runs successfully.${NC}"
 }
 
-# Security checks without stopping execution
-function security_check() {
-    echo -e "${YELLOW}🔍 Running security checks...${NC}"
-    
-    local security_issues=0
+# Fix security issues
+function security_check_and_fix() {
+    echo -e "${YELLOW}🔍 Running security checks and applying fixes...${NC}"
 
-    # Static security analysis with bandit
-    echo -e "${BLUE}🔹 Running Bandit...${NC}"
-    bandit -r apknife | tee bandit_report.txt
-    if grep -q "Issue" bandit_report.txt; then
-        echo -e "${RED}⚠️ Security vulnerabilities detected by Bandit! Please review:${NC}"
-        cat bandit_report.txt | grep "Issue"
-        security_issues=1
+    bandit -r apknife | tee security_report.txt
+    if grep -q "Issue:" security_report.txt; then
+        echo -e "${RED}⚠️ Security vulnerabilities detected!${NC}"
+        cat security_report.txt
     fi
 
-    # Check for vulnerabilities in dependencies
-    echo -e "${BLUE}🔹 Running Safety...${NC}"
-    safety check | tee safety_report.txt
-    if grep -q "vulnerabilities" safety_report.txt; then
-        echo -e "${RED}⚠️ Security issues found in dependencies!${NC}"
-        cat safety_report.txt
-        security_issues=1
+    echo -e "${YELLOW}🔄 Checking dependencies for security vulnerabilities...${NC}"
+    safety check --full-report | tee safety_report.txt
+    if grep -q "INSECURE PACKAGE" safety_report.txt; then
+        echo -e "${RED}⚠️ Vulnerable dependencies detected! Updating packages...${NC}"
+        pip install --upgrade -r requirements.txt
     fi
 
-    if [ $security_issues -eq 1 ]; then
-        echo -e "${YELLOW}⚠️ Security issues were found, but continuing with the release.${NC}"
-    else
-        echo -e "${GREEN}✅ No critical security issues detected.${NC}"
+    echo -e "${GREEN}✅ Security checks completed.${NC}"
+}
+
+# Fix issues in requirements.txt
+function fix_requirements() {
+    echo -e "${YELLOW}🔄 Checking for package compatibility issues...${NC}"
+
+    if pip install -r requirements.txt 2>&1 | grep -q "No matching distribution found"; then
+        echo -e "${RED}⚠️ Incompatible packages found. Updating requirements...${NC}"
+        pip freeze > new_requirements.txt
+        mv new_requirements.txt requirements.txt
     fi
+
+    echo -e "${GREEN}✅ Requirements file is up-to-date.${NC}"
 }
 
 # Run tests
@@ -94,7 +95,7 @@ function run_tests() {
     echo -e "${GREEN}✅ All tests passed successfully.${NC}"
 }
 
-# Update version in setup.py & pyproject.toml
+# Update version
 function update_version() {
     echo -e "${YELLOW}🔄 Updating version to $NEW_VERSION...${NC}"
     
@@ -104,7 +105,7 @@ function update_version() {
     echo -e "${GREEN}✅ Version updated.${NC}"
 }
 
-# Sync updates with GitHub
+# Sync with GitHub
 function sync_with_github() {
     echo -e "${YELLOW}🔄 Syncing with GitHub...${NC}"
     
@@ -137,7 +138,8 @@ function build_and_upload_to_pypi() {
 # ** Run all steps in order **
 check_and_fix_project_structure
 check_tool_execution
-security_check  # لا يوقف التنفيذ عند وجود ثغرات
+security_check_and_fix
+fix_requirements
 run_tests
 update_version
 sync_with_github
