@@ -1,0 +1,17 @@
+# Include important files
+include README.md
+include LICENSE
+
+# Include all files inside the src/apknife/ directory
+recursive-include src/apknife *
+
+# Include additional directories (assets, modules, tools)
+recursive-include src/apknife/assets *
+recursive-include src/apknife/modules *
+recursive-include src/apknife/tools *
+
+# Include common data and configuration files
+global-include *.txt *.md *.json *.yml *.yaml *.ini *.cfg
+
+# Exclude unnecessary files
+global-exclude __pycache__ *.pyc *.pyo *.pyd .DS_Store .git*

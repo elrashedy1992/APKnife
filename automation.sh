@@ -7,97 +7,142 @@ RED='\033[0;31m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
-# Function to display a header
-function display_header() {
-    echo -e "${BLUE}"
-    echo "==========================================="
-    echo "      Git & PyPI Auto-Update Script        "
-    echo "==========================================="
-    echo -e "${NC}"
+# Ensure a new version number is provided
+if [ -z "$1" ]; then
+    echo -e "${RED}❌ Please specify the new version number.${NC}"
+    exit 1
+fi
+NEW_VERSION=$1
+
+# Display script header
+echo -e "${BLUE}==========================================="
+echo -e "    Git & PyPI Auto-Update with Security Checks"
+echo -e "===========================================${NC}"
+
+# Check and fix project structure
+function check_and_fix_project_structure() {
+    echo -e "${YELLOW}🔍 Checking project structure...${NC}"
+
+    if [ ! -f "setup.py" ] && [ ! -f "pyproject.toml" ]; then
+        echo -e "${RED}❌ setup.py or pyproject.toml not found. This is not a valid Python project.${NC}"
+        exit 1
+    fi
+
+    if [ ! -d "apknife" ]; then
+        echo -e "${RED}⚠️ The main package directory 'apknife' is missing. Fixing...${NC}"
+        mkdir -p apknife
+        mv {__init__.py,apknife.py,assets,modules,commands.json,tools} apknife/ 2>/dev/null
+    fi
+
+    echo -e "${GREEN}✅ Project structure is correct.${NC}"
 }
 
-# Get the current Git branch
-function get_current_branch() {
-    git rev-parse --abbrev-ref HEAD
+# Check if the tool runs after installation
+function check_tool_execution() {
+    echo -e "${YELLOW}🔄 Checking tool execution after installation...${NC}"
+
+    pip install .
+    if ! command -v apknife &> /dev/null; then
+        echo -e "${RED}❌ The tool does not run when calling 'apknife'.${NC}"
+        exit 1
+    fi
+
+    echo -e "${GREEN}✅ The tool runs successfully.${NC}"
 }
 
-# Sync with GitHub
-function sync_with_github() {
-    BRANCH=$(get_current_branch)
-    echo -e "${YELLOW}🔄 Syncing with GitHub (Branch: $BRANCH)...${NC}"
-    git pull origin "$BRANCH"
+# Security checks without stopping execution
+function security_check() {
+    echo -e "${YELLOW}🔍 Running security checks...${NC}"
+    
+    local security_issues=0
+
+    # Static security analysis with bandit
+    echo -e "${BLUE}🔹 Running Bandit...${NC}"
+    bandit -r apknife | tee bandit_report.txt
+    if grep -q "Issue" bandit_report.txt; then
+        echo -e "${RED}⚠️ Security vulnerabilities detected by Bandit! Please review:${NC}"
+        cat bandit_report.txt | grep "Issue"
+        security_issues=1
+    fi
+
+    # Check for vulnerabilities in dependencies
+    echo -e "${BLUE}🔹 Running Safety...${NC}"
+    safety check | tee safety_report.txt
+    if grep -q "vulnerabilities" safety_report.txt; then
+        echo -e "${RED}⚠️ Security issues found in dependencies!${NC}"
+        cat safety_report.txt
+        security_issues=1
+    fi
+
+    if [ $security_issues -eq 1 ]; then
+        echo -e "${YELLOW}⚠️ Security issues were found, but continuing with the release.${NC}"
+    else
+        echo -e "${GREEN}✅ No critical security issues detected.${NC}"
+    fi
 }
 
-# Update version in pyproject.toml or setup.py
+# Run tests
+function run_tests() {
+    echo -e "${YELLOW}🧪 Running tests...${NC}"
+    
+    pytest tests/
+    if [ $? -ne 0 ]; then
+        echo -e "${RED}❌ Some tests failed! Please fix them before publishing.${NC}"
+        exit 1
+    fi
+
+    echo -e "${GREEN}✅ All tests passed successfully.${NC}"
+}
+
+# Update version in setup.py & pyproject.toml
 function update_version() {
-    local NEW_VERSION=$1
-    FILES=("pyproject.toml" "setup.py")
+    echo -e "${YELLOW}🔄 Updating version to $NEW_VERSION...${NC}"
+    
+    sed -i "s/version = \"[^\"]*\"/version = \"$NEW_VERSION\"/" pyproject.toml
+    sed -i "s/version=['\"][^'\"]*['\"]/version='$NEW_VERSION'/" setup.py
 
-    for FILE in "${FILES[@]}"; do
-        if [ -f "$FILE" ]; then
-            if [[ "$FILE" == "pyproject.toml" ]]; then
-                sed -i "s/version = \".*\"/version = \"$NEW_VERSION\"/" "$FILE"
-            elif [[ "$FILE" == "setup.py" ]]; then
-                sed -i "s/version=['\"].*['\"];/version='$NEW_VERSION'/" "$FILE"
-            fi
-            echo -e "${GREEN}✅ Updated $FILE to version $NEW_VERSION.${NC}"
-        fi
-    done
+    echo -e "${GREEN}✅ Version updated.${NC}"
 }
 
-# Commit and push changes
-function commit_and_push_changes() {
-    local NEW_VERSION=$1
-    BRANCH=$(get_current_branch)
-
+# Sync updates with GitHub
+function sync_with_github() {
+    echo -e "${YELLOW}🔄 Syncing with GitHub...${NC}"
+    
+    git pull origin main
     git add .
-    git commit -m "Release version $NEW_VERSION"
-    git push origin "$BRANCH"
+    git commit -m "🚀 Release: $NEW_VERSION"
+    git push origin main
 
     echo -e "${GREEN}✅ Changes pushed to GitHub.${NC}"
 }
 
 # Build and upload package to PyPI
 function build_and_upload_to_pypi() {
-    echo -e "${YELLOW}📦 Cleaning up previous builds...${NC}"
+    echo -e "${YELLOW}📦 Cleaning up and building package...${NC}"
+    
     rm -rf dist/ build/ *.egg-info
-
-    echo -e "${BLUE}🚀 Building package...${NC}"
     python -m build
 
     echo -e "${YELLOW}📤 Uploading package to PyPI...${NC}"
     twine upload dist/*
 
     if [ $? -eq 0 ]; then
-        echo -e "${GREEN}✅ Successfully uploaded to PyPI!${NC}"
+        echo -e "${GREEN}✅ Package successfully uploaded to PyPI.${NC}"
     else
-        echo -e "${RED}❌ Upload failed. Please check your credentials and try again.${NC}"
+        echo -e "${RED}❌ Upload failed. Please check for errors.${NC}"
         exit 1
     fi
 }
 
-# Main function
-function automate_update() {
-    display_header
-
-    # Check if version argument is provided
-    if [ -z "$1" ]; then
-        echo -e "${RED}❌ Error: Please provide the new version as an argument.${NC}"
-        echo "Usage: ./script.sh <new_version>"
-        exit 1
-    fi
-
-    NEW_VERSION=$1
-
-    sync_with_github
-    update_version "$NEW_VERSION"
-    commit_and_push_changes "$NEW_VERSION"
-    build_and_upload_to_pypi
-}
-
-# Run the script with the provided version number
-automate_update "$1"
+# ** Run all steps in order **
+check_and_fix_project_structure
+check_tool_execution
+security_check  # لا يوقف التنفيذ عند وجود ثغرات
+run_tests
+update_version
+sync_with_github
+build_and_upload_to_pypi
 
 echo -e "${BLUE}==========================================="
-echo -e "        Script Execution Complete          "
+echo -e "    🚀 Successfully released version $NEW_VERSION!"
 echo -e "===========================================${NC}"

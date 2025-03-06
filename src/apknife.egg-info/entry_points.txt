@@ -1,0 +1,2 @@
+[console_scripts]
+apknife = apknife.apknife:main
