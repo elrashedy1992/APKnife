@@ -33,16 +33,16 @@
   Safety [1mv3.3.1[0m is scanning for [1mVulnerabilities[0m[1m...[0m
 [1m  Scanning dependencies[0m in your [1menvironment:[0m
 
+  -> /usr/lib/python3.13
   -> /root/venv/lib/python3.13/site-packages/setuptools/_vendor
   -> /root/venv/lib/python3.13/site-packages
-  -> /root/venv/bin
   -> /usr/lib/python313.zip
-  -> /usr/lib/python3.13
+  -> /root/venv/bin
   -> /usr/lib/python3.13/lib-dynload
 
   Using [1mopen-source vulnerability database[0m
 [1m  Found and scanned 113 packages[0m
-  Timestamp [1m2025-03-06 04:10:22[0m
+  Timestamp [1m2025-03-06 04:13:16[0m
 [1m  2[0m[1m vulnerabilities reported[0m
 [1m  0[0m[1m vulnerabilities ignored[0m
 
