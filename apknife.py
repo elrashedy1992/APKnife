@@ -13,7 +13,7 @@ from prompt_toolkit.styles import Style
 from apknife.modules import (
     analyzer, api_finder, builder, catch_rat, extract_sensitive, extractor,
     java_extractor, manifest_editor, permission_scanner, signer, smali_tools,
-    vulnerability_scanner, dex_extractor, manifest_decoder  # Added the new module
+    vulnerability_scanner, dex_extractor, manifest_decoder
 )
 from apknife.modules.interactive_mode import interactive_shell
 from apknife.modules.apk_modifier import APKModifier
@@ -32,7 +32,7 @@ RESET = "\033[0m"
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 
 # Banner ASCII Art
-BANNER = f"""{GREEN}
+BANNER = f"""{RED}
 APKnife: The Cyber Blade of APK Domination
 @@@@@@   @@@@@@@   @@@  @@@  @@@  @@@  @@@  @@@@@@@@  @@@@@@@@
 @@@@@@@@  @@@@@@@@  @@@  @@@  @@@@ @@@  @@@  @@@@@@@@  @@@@@@@@
@@ -43,7 +43,7 @@ APKnife: The Cyber Blade of APK Domination
 !!:  !!!  !!:       !!: :!!   !!:  !!!  !!:  !!:       !!:
 :!:  !:!  :!:       :!:  !:!  :!:  !:!  :!:  :!:       :!:
 ::   :::   ::        ::  :::   ::   ::   ::   ::        :: ::::
-:   : :   :         :   :::  ::    :   :     :        : :: ::
+:   : :   :         :   :::  ::    :   :     :        : :: :::
 
 {RESET}{CYAN}     APKnife – The Double-Edged Blade of APK Analysis 🔪🧸
 {YELLOW}     Fear the Blade, Trust the Power! 🎨
@@ -76,7 +76,8 @@ def load_commands():
             "update-commands": "Reloads the commands from the external file",
             "list-commands": "Displays the current list of available commands",
             "extract-dex": "Extract DEX files from an APK without fully decompiling it",
-            "decod_mainfest": "Decode AndroidManifest.xml without fully decompiling the APK"  # Added the new command
+            "decode_manifest": "Decode AndroidManifest.xml without fully decompiling the APK",
+            "waf": "Scan the app for protection mechanisms (e.g., Firewall, ProGuard, etc.)"  # Added the new command
         }
         with open("commands.json", "w") as file:
             json.dump(default_commands, file, indent=4)
@@ -100,7 +101,7 @@ def main():
             "extract", "build", "sign", "analyze", "edit-manifest", "smali",
             "decode_manifest", "find-oncreate", "find-api", "scan-vulnerabilities",
             "scan-permissions", "catch_rat", "extract-java", "interactive",
-            "extract-sensitive", "modify-apk", "extract-dex"
+            "extract-sensitive", "modify-apk", "extract-dex", "waf"  # Added the new command
         ],
         help="Command to execute",
     )
@@ -171,6 +172,11 @@ def main():
                 logging.info(f"{GREEN}[*] DEX files extracted successfully: {dex_files}{RESET}")
             else:
                 logging.error(f"{RED}[!] Failed to extract DEX files{RESET}")
+        elif args.command == "waf":
+            from apknife.modules.protection_scanner import scan_apk_protections
+            protections = scan_apk_protections(args.input)
+            for protection, status in protections.items():
+                print(f"{protection}: {'✅' if status else '❌'}")
         else:
             logging.error(f"{RED}[!] Unknown command!{RESET}")
 

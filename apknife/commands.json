@@ -5,7 +5,7 @@
     "analyze": "Analyzes an APK for vulnerabilities (-i input.apk)",
     "edit-manifest": "Modifies the AndroidManifest.xml of an APK (-i input.apk)",
     "smali": "Decompiles APK into smali code (-i input.apk -o output_folder)",
-    "decode-xml": "Decodes binary XML files in an APK (-i input.apk)",
+    "decode_manifest": "Decodes binary XML files in an APK (-i input.apk)",
     "find-oncreate": "Finds the onCreate methods inside smali code (-i input.apk)",
     "find-api": "Finds API calls used in an APK (-i input.apk or -i smali_file(recommended))",
     "scan-vulnerabilities": "Scans APK for security vulnerabilities (-i input.apk)",
@@ -16,7 +16,8 @@
     "modify-apk --icon": "Modifies the APK icon (-i input.apk)",
     "modify-apk --name": "Changes the application name (-i input.apk)",
     "modify-apk --package": "Modifies the package name (-i input.apk -o new_package_name)",
-    "extract-dex": "Extract DEX files from an APK without fully decompiling it"
+    "extract-dex": "Extract DEX files from an APK without fully decompiling it",
+    "waf": "Scan the app for protection mechanisms (e.g., Firewall, ProGuard, etc.)",
     "update-commands": "Reloads the commands from the external file",
     "list-commands": "Displays the current list of available commands",
     "help": "Displays this help menu",
