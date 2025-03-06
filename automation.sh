@@ -79,54 +79,57 @@ EOF
     echo -e "${GREEN}✅ Setup files are correct.${NC}"
 }
 
-# **3️⃣ Fix Security Issues**
+# **3️⃣ Run Security Checks & Save Reports**
 function fix_security_issues() {
     echo -e "${YELLOW}🔍 Running security checks...${NC}"
     
     bandit -r apknife | tee "$REPORTS_DIR/security_report.txt"
-    if grep -q "Issue:" "$REPORTS_DIR/security_report.txt"; then
-        echo -e "${RED}⚠️ Security vulnerabilities detected!${NC}"
-    fi
-
     safety check --full-report | tee "$REPORTS_DIR/safety_report.txt"
-    if grep -q "INSECURE PACKAGE" "$REPORTS_DIR/safety_report.txt"; then
-        echo -e "${YELLOW}🔄 Updating vulnerable packages...${NC}"
-        pip install --upgrade -r requirements.txt
-    fi
 
     echo -e "${GREEN}✅ Security checks completed.${NC}"
 }
 
-# **4️⃣ Fix Issues in requirements.txt**
-function fix_requirements() {
-    echo -e "${YELLOW}🔄 Checking package compatibility in requirements.txt...${NC}"
-    
-    # Ensure pip is up-to-date
+# **4️⃣ Update pip Safely**
+function update_pip() {
     echo -e "${YELLOW}🔄 Updating pip to the latest version...${NC}"
-    pip install --upgrade pip --user || sudo pip install --upgrade pip
-
-    # Ensure exact versions are specified in requirements.txt
-    echo -e "${YELLOW}📄 Freezing exact versions in requirements.txt...${NC}"
-    pip freeze > temp_requirements.txt
-    mv temp_requirements.txt requirements.txt
-
-    # Check for version conflicts
-    echo -e "${YELLOW}🔍 Checking for version conflicts...${NC}"
-    if pip check; then
-        echo -e "${GREEN}✅ No version conflicts detected.${NC}"
+    
+    if [ -n "$VIRTUAL_ENV" ]; then
+        pip install --upgrade pip
     else
-        echo -e "${YELLOW}⚠️ Version conflicts detected! Attempting to resolve...${NC}"
-        pip install -r requirements.txt --upgrade --force-reinstall --user || sudo pip install -r requirements.txt --upgrade --force-reinstall
-        
-        if pip check; then
-            echo -e "${GREEN}✅ Version conflicts resolved.${NC}"
-        else
-            echo -e "${RED}❌ Unable to resolve version conflicts automatically. Please check manually.${NC}"
-        fi
+        pip install --upgrade pip --user || sudo pip install --upgrade pip
     fi
 }
 
-# **5️⃣ Run Tests**
+# **5️⃣ Fix Issues in requirements.txt**
+function fix_requirements() {
+    echo -e "${YELLOW}🔄 Checking package compatibility in requirements.txt...${NC}"
+    
+    update_pip
+
+    echo -e "${YELLOW}📄 Freezing exact versions in requirements.txt...${NC}"
+    pip freeze > requirements.txt
+
+    echo -e "${YELLOW}🔍 Checking for version conflicts...${NC}"
+    if ! pip check; then
+        echo -e "${YELLOW}⚠️ Resolving package conflicts...${NC}"
+        install_requirements
+    fi
+
+    echo -e "${GREEN}✅ Requirements are updated.${NC}"
+}
+
+# **6️⃣ Install requirements safely**
+function install_requirements() {
+    echo -e "${YELLOW}📦 Installing dependencies from requirements.txt...${NC}"
+    
+    if [ -n "$VIRTUAL_ENV" ]; then
+        pip install -r requirements.txt --upgrade --force-reinstall
+    else
+        pip install -r requirements.txt --upgrade --force-reinstall --user || sudo pip install -r requirements.txt --upgrade --force-reinstall
+    fi
+}
+
+# **7️⃣ Run Tests**
 function run_tests() {
     echo -e "${YELLOW}🧪 Running tests...${NC}"
     
@@ -139,7 +142,7 @@ function run_tests() {
     echo -e "${GREEN}✅ All tests passed.${NC}"
 }
 
-# **6️⃣ Update Version Number**
+# **8️⃣ Update Version Number**
 function update_version() {
     echo -e "${YELLOW}🔄 Updating version to $NEW_VERSION...${NC}"
     
@@ -149,7 +152,7 @@ function update_version() {
     echo -e "${GREEN}✅ Version updated.${NC}"
 }
 
-# **7️⃣ Sync with GitHub**
+# **9️⃣ Sync with GitHub**
 function sync_with_github() {
     echo -e "${YELLOW}🔄 Syncing with GitHub...${NC}"
     
@@ -159,16 +162,13 @@ function sync_with_github() {
     
     if ! git diff-index --quiet HEAD --; then
         git commit -m "🚀 Release: $NEW_VERSION"
-    else
-        echo -e "${YELLOW}⚠️ No changes to commit.${NC}"
     fi
 
     git push origin main || git push --force origin main
-
-    echo -e "${GREEN}✅ Changes successfully pushed to GitHub.${NC}"
+    echo -e "${GREEN}✅ Changes pushed to GitHub.${NC}"
 }
 
-# **8️⃣ Build and Upload to PyPI**
+# **🔟 Build and Upload to PyPI**
 function build_and_upload_to_pypi() {
     echo -e "${YELLOW}📦 Building and uploading package...${NC}"
     
@@ -176,16 +176,16 @@ function build_and_upload_to_pypi() {
     python -m build
     twine upload dist/*
 
-    echo -e "${GREEN}✅ Package uploaded successfully to PyPI.${NC}"
+    echo -e "${GREEN}✅ Package uploaded to PyPI.${NC}"
 }
 
-# **9️⃣ Verify Tool Execution**
+# **🔟 Verify Tool Execution After Installation**
 function check_tool_execution() {
     echo -e "${YELLOW}🔄 Verifying tool execution...${NC}"
 
     python -m venv test_env
     source test_env/bin/activate
-    pip install . --user || sudo pip install .
+    pip install .
 
     if ! command -v apknife &> /dev/null; then
         echo -e "${RED}❌ The tool does not run when calling 'apknife'.${NC}"
@@ -196,13 +196,14 @@ function check_tool_execution() {
 
     deactivate
     rm -rf test_env
+
     echo -e "${GREEN}✅ The tool runs successfully.${NC}"
 }
 
-# **🔟 Cleanup**
+# **🧹 Clean Up Unnecessary Files**
 function cleanup() {
     echo -e "${YELLOW}🧹 Cleaning up unnecessary files...${NC}"
-    
+
     rm -rf test_env dist/ build/ *.egg-info
     find . -type d -name "__pycache__" -exec rm -rf {} +
     find . -type f -name "*.pyc" -delete
@@ -210,7 +211,7 @@ function cleanup() {
     echo -e "${GREEN}✅ Cleanup completed.${NC}"
 }
 
-# **Run all steps**
+# **Run all steps in order**
 fix_project_structure
 fix_setup_files
 fix_security_issues
@@ -222,4 +223,6 @@ build_and_upload_to_pypi
 check_tool_execution
 cleanup
 
-echo -e "${BLUE}🚀 Successfully released version $NEW_VERSION!${NC}"
+echo -e "${BLUE}==========================================="
+echo -e "    🚀 Successfully released version $NEW_VERSION!"
+echo -e "===========================================${NC}"
