@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/cover.png" alt="APKnife Cover" width="100%">
+  <img src="apknife/assets/cover.png" alt="APKnife Cover" width="100%">
 </p>
 ---
 
