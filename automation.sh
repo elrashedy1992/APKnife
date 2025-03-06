@@ -100,44 +100,30 @@ function fix_security_issues() {
 # **4️⃣ Fix Issues in requirements.txt**
 function fix_requirements() {
     echo -e "${YELLOW}🔄 Checking package compatibility in requirements.txt...${NC}"
-
-    # Create a backup before modifying
-    cp requirements.txt requirements_backup.txt
-
-    # Iterate through each package in requirements.txt
-    while IFS= read -r package; do
-        if [[ "$package" == "#"* ]] || [[ -z "$package" ]]; then
-            continue  # Skip comments and empty lines
-        fi
-
-        package_name=$(echo "$package" | sed 's/[<>=!].*//')  # Extract package name
-        required_version=$(echo "$package" | grep -oP '(?<===)[0-9\.]+')  # Extract version if specified
-
-        # Check if the package version exists
-        available_versions=$(pip index versions "$package_name" 2>/dev/null | grep -oP '[0-9]+(\.[0-9]+)*' | sort -V)
-        
-        if [ -z "$available_versions" ]; then
-            echo -e "${RED}⚠️ Package '$package_name' not found on PyPI! Removing from requirements.${NC}"
-            continue  # Skip this package
-        fi
-        
-        latest_version=$(echo "$available_versions" | tail -n 1)  # Get the latest version
-        
-        if [[ -n "$required_version" ]] && ! echo "$available_versions" | grep -q "^$required_version$"; then
-            echo -e "${YELLOW}⚠️ Version '$required_version' of '$package_name' is not available! Using '$latest_version' instead.${NC}"
-            echo "$package_name==$latest_version" >> fixed_requirements.txt
-        else
-            echo "$package" >> fixed_requirements.txt  # Keep valid versions
-        fi
-
-    done < requirements.txt
-
-    # Replace the old requirements.txt with the fixed one
-    mv fixed_requirements.txt requirements.txt
-
-    echo -e "${GREEN}✅ requirements.txt updated. Installing dependencies...${NC}"
     
-    pip install -r requirements.txt
+    # Ensure exact versions are specified in requirements.txt
+    echo -e "${YELLOW}📄 Freezing exact versions in requirements.txt...${NC}"
+    pip freeze > requirements.txt
+
+    # Check for version conflicts
+    echo -e "${YELLOW}🔍 Checking for version conflicts...${NC}"
+    pip check
+    if [ $? -ne 0 ]; then
+        echo -e "${YELLOW}⚠️ Version conflicts detected! Attempting to resolve...${NC}"
+        
+        # Try to install the correct versions from requirements.txt
+        pip install -r requirements.txt --upgrade --force-reinstall
+        
+        # Re-check for conflicts
+        pip check
+        if [ $? -ne 0 ]; then
+            echo -e "${RED}❌ Unable to resolve version conflicts automatically. Please check manually.${NC}"
+        else
+            echo -e "${GREEN}✅ Version conflicts resolved.${NC}"
+        fi
+    else
+        echo -e "${GREEN}✅ No version conflicts detected.${NC}"
+    fi
 }
 
 # **5️⃣ Run Tests**
@@ -167,19 +153,31 @@ function update_version() {
 function sync_with_github() {
     echo -e "${YELLOW}🔄 Syncing with GitHub...${NC}"
     
+    # Ensure we are on the main branch
     git checkout main
+    
+    # Pull the latest changes with rebase to avoid merge commits
     git pull --rebase origin main
+    
+    # Add all files to the commit
     git add .
     
+    # Check if there are changes before committing
     if ! git diff-index --quiet HEAD --; then
         git commit -m "🚀 Release: $NEW_VERSION"
     else
         echo -e "${YELLOW}⚠️ No changes to commit.${NC}"
     fi
 
-    git push origin main || git push --force origin main
-
-    echo -e "${GREEN}✅ Changes successfully pushed to GitHub.${NC}"
+    # Push the updates to GitHub
+    git push origin main
+    
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}✅ Changes successfully pushed to GitHub.${NC}"
+    else
+        echo -e "${RED}❌ Git push failed. Trying force push...${NC}"
+        git push --force origin main
+    fi
 }
 
 # **8️⃣ Build and Upload to PyPI**
@@ -190,19 +188,64 @@ function build_and_upload_to_pypi() {
     python -m build
 
     echo -e "${YELLOW}📤 Uploading package to PyPI...${NC}"
-    twine upload dist/* || { echo -e "${RED}❌ Upload failed.${NC}"; exit 1; }
+    twine upload dist/*
 
-    echo -e "${GREEN}✅ Package uploaded successfully to PyPI.${NC}"
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}✅ Package uploaded successfully to PyPI.${NC}"
+    else
+        echo -e "${RED}❌ Upload failed. Please check for errors.${NC}"
+        exit 1
+    fi
 }
 
 # **9️⃣ Verify Tool Execution After Installation**
 function check_tool_execution() {
     echo -e "${YELLOW}🔄 Verifying tool execution...${NC}"
 
+    # Create a virtual environment for testing
+    echo -e "${YELLOW}🧪 Creating a virtual environment for testing...${NC}"
+    python -m venv test_env
+    source test_env/bin/activate
+
+    # Install the package in the virtual environment
+    echo -e "${YELLOW}📦 Installing the package in the virtual environment...${NC}"
     pip install .
-    command -v apknife &> /dev/null || { echo -e "${RED}❌ The tool does not run when calling 'apknife'.${NC}"; exit 1; }
+
+    # Verify the tool execution
+    if ! command -v apknife &> /dev/null; then
+        echo -e "${RED}❌ The tool does not run when calling 'apknife'.${NC}"
+        deactivate
+        rm -rf test_env
+        exit 1
+    fi
+
+    # Deactivate and remove the virtual environment
+    deactivate
+    rm -rf test_env
 
     echo -e "${GREEN}✅ The tool runs successfully.${NC}"
+}
+
+# **🔟 Clean Up Unnecessary Files**
+function cleanup() {
+    echo -e "${YELLOW}🧹 Cleaning up unnecessary files...${NC}"
+
+    # Remove virtual environment if it exists
+    if [ -d "test_env" ]; then
+        echo -e "${YELLOW}🗑️ Deleting test virtual environment...${NC}"
+        rm -rf test_env
+    fi
+
+    # Remove build and distribution directories
+    echo -e "${YELLOW}🗑️ Deleting build and distribution directories...${NC}"
+    rm -rf dist/ build/ *.egg-info
+
+    # Remove any other temporary files
+    echo -e "${YELLOW}🗑️ Deleting other temporary files...${NC}"
+    find . -type d -name "__pycache__" -exec rm -rf {} +
+    find . -type f -name "*.pyc" -delete
+
+    echo -e "${GREEN}✅ Cleanup completed.${NC}"
 }
 
 # **Run all steps in order**
@@ -215,6 +258,7 @@ update_version
 sync_with_github
 build_and_upload_to_pypi
 check_tool_execution
+cleanup
 
 echo -e "${BLUE}==========================================="
 echo -e "    🚀 Successfully released version $NEW_VERSION!"

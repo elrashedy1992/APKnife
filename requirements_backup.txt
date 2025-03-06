@@ -44,7 +44,7 @@ pycparser==2.22
 pydot==3.0.4
 Pygments==2.19.1
 pyparsing==3.2.1
-python-dateutil==2.9.0.post0
+python-dateutil==2.9.0
 PyYAML==6.0.2
 requests==2.32.3
 setuptools==75.8.2
