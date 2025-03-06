@@ -10,7 +10,7 @@ from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.styles import Style
-from modules import (
+from apknife.modules import (
     analyzer, api_finder, builder, catch_rat, extract_sensitive, extractor,
     java_extractor, manifest_editor, permission_scanner, signer, smali_tools,
     vulnerability_scanner, xml_decoder
