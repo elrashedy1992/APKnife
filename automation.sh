@@ -100,14 +100,44 @@ function fix_security_issues() {
 # **4️⃣ Fix Issues in requirements.txt**
 function fix_requirements() {
     echo -e "${YELLOW}🔄 Checking package compatibility in requirements.txt...${NC}"
-    
-    if pip install -r requirements.txt 2>&1 | grep -q "No matching distribution found"; then
-        echo -e "${RED}⚠️ Incompatible packages found! Updating requirements...${NC}"
-        pip freeze > new_requirements.txt
-        mv new_requirements.txt requirements.txt
-    fi
 
-    echo -e "${GREEN}✅ requirements.txt is updated.${NC}"
+    # Create a backup before modifying
+    cp requirements.txt requirements_backup.txt
+
+    # Iterate through each package in requirements.txt
+    while IFS= read -r package; do
+        if [[ "$package" == "#"* ]] || [[ -z "$package" ]]; then
+            continue  # Skip comments and empty lines
+        fi
+
+        package_name=$(echo "$package" | sed 's/[<>=!].*//')  # Extract package name
+        required_version=$(echo "$package" | grep -oP '(?<===)[0-9\.]+')  # Extract version if specified
+
+        # Check if the package version exists
+        available_versions=$(pip index versions "$package_name" 2>/dev/null | grep -oP '[0-9]+(\.[0-9]+)*' | sort -V)
+        
+        if [ -z "$available_versions" ]; then
+            echo -e "${RED}⚠️ Package '$package_name' not found on PyPI! Removing from requirements.${NC}"
+            continue  # Skip this package
+        fi
+        
+        latest_version=$(echo "$available_versions" | tail -n 1)  # Get the latest version
+        
+        if [[ -n "$required_version" ]] && ! echo "$available_versions" | grep -q "^$required_version$"; then
+            echo -e "${YELLOW}⚠️ Version '$required_version' of '$package_name' is not available! Using '$latest_version' instead.${NC}"
+            echo "$package_name==$latest_version" >> fixed_requirements.txt
+        else
+            echo "$package" >> fixed_requirements.txt  # Keep valid versions
+        fi
+
+    done < requirements.txt
+
+    # Replace the old requirements.txt with the fixed one
+    mv fixed_requirements.txt requirements.txt
+
+    echo -e "${GREEN}✅ requirements.txt updated. Installing dependencies...${NC}"
+    
+    pip install -r requirements.txt
 }
 
 # **5️⃣ Run Tests**
@@ -137,31 +167,19 @@ function update_version() {
 function sync_with_github() {
     echo -e "${YELLOW}🔄 Syncing with GitHub...${NC}"
     
-    # Ensure we are on the main branch
     git checkout main
-    
-    # Pull the latest changes with rebase to avoid merge commits
     git pull --rebase origin main
-    
-    # Add all files to the commit
     git add .
     
-    # Check if there are changes before committing
     if ! git diff-index --quiet HEAD --; then
         git commit -m "🚀 Release: $NEW_VERSION"
     else
         echo -e "${YELLOW}⚠️ No changes to commit.${NC}"
     fi
 
-    # Push the updates to GitHub
-    git push origin main
-    
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}✅ Changes successfully pushed to GitHub.${NC}"
-    else
-        echo -e "${RED}❌ Git push failed. Trying force push...${NC}"
-        git push --force origin main
-    fi
+    git push origin main || git push --force origin main
+
+    echo -e "${GREEN}✅ Changes successfully pushed to GitHub.${NC}"
 }
 
 # **8️⃣ Build and Upload to PyPI**
@@ -172,14 +190,9 @@ function build_and_upload_to_pypi() {
     python -m build
 
     echo -e "${YELLOW}📤 Uploading package to PyPI...${NC}"
-    twine upload dist/*
+    twine upload dist/* || { echo -e "${RED}❌ Upload failed.${NC}"; exit 1; }
 
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}✅ Package uploaded successfully to PyPI.${NC}"
-    else
-        echo -e "${RED}❌ Upload failed. Please check for errors.${NC}"
-        exit 1
-    fi
+    echo -e "${GREEN}✅ Package uploaded successfully to PyPI.${NC}"
 }
 
 # **9️⃣ Verify Tool Execution After Installation**
@@ -187,10 +200,7 @@ function check_tool_execution() {
     echo -e "${YELLOW}🔄 Verifying tool execution...${NC}"
 
     pip install .
-    if ! command -v apknife &> /dev/null; then
-        echo -e "${RED}❌ The tool does not run when calling 'apknife'.${NC}"
-        exit 1
-    fi
+    command -v apknife &> /dev/null || { echo -e "${RED}❌ The tool does not run when calling 'apknife'.${NC}"; exit 1; }
 
     echo -e "${GREEN}✅ The tool runs successfully.${NC}"
 }
