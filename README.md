@@ -173,7 +173,7 @@ rustc --version
 
 📥 Installing APKnife
 ```
-pip install apk nife
+pip install apknife
 ```
 
 
@@ -205,44 +205,44 @@ extracted/ -o modified.apk
 ```
 🟢 Sign APK
 ```
-python3 apknife.py sign -i modified.apk
+apknife sign -i modified.apk
 ```
 🟢 Analyze APK for Vulnerabilities
 ```
-python3 apknife.py scan_vulnerabilities -i target.apk
+apknife scan_vulnerabilities -i target.apk
 ```
 🟢 Detect Remote Access Trojans (RATs)
 ```
-python3 apknife.py catch_rat -i malicious.apk
+apknife catch_rat -i malicious.apk
 ```
 🟢 Extract Java Source Code
 ```
-python3 apknife.py extract-java -i target.apk -o src_folder
+apknife extract-java -i target.apk -o src_folder
 ```
 🟢 Change APK Name
 ```
-python3 apknife.py modify-apk --name -i app.apk
+apknife modify-apk --name -i app.apk
 ```
 🟢 Change APK Icon
 ```
-python3 apknife.py modify-apk --icon new_icon.png -i app.apk
+apknife modify-apk --icon new_icon.png -i app.apk
 ```
 🟢 Modify Package Name
 ```
-python3 apknife.py modify-apk --package com.example.example -i app.apk
+apknife modify-apk --package com.example.example -i app.apk
 ```
 
 ```
-python3 apknife.py modify-apk --name new_name --package new.package.name --icon anysize.any -o modified_apk.apk
+apknife modify-apk --name new_name --package new.package.name --icon anysize.any -o modified_apk.apk
 ```
 🟢 Scan APK Permissions
 ```
-python3 apknife.py scan_permissions -i target.apk
+apknife scan_permissions -i target.apk
 ```
 👇help menu👇
 
 ---
-python3 apknife.py -h
+apknife -h
 usage: apknife.py [-h] [-i INPUT] [-o OUTPUT] [-c] [--name NAME] [--icon ICON]
                   [--package PACKAGE]
                   {extract,build,sign,analyze,edit-manifest,smali,decode-xml,find-oncreate,find-api,scan-vulnerabilities,scan-permissions,catch_rat,extract-java,interactive,extract-sensitive,modify-apk}
