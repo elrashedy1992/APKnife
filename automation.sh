@@ -133,16 +133,35 @@ function update_version() {
     echo -e "${GREEN}✅ Version updated.${NC}"
 }
 
-# **7️⃣ Sync with GitHub**
+# **7️⃣ Sync with GitHub (Handling Divergent Branches)**
 function sync_with_github() {
     echo -e "${YELLOW}🔄 Syncing with GitHub...${NC}"
     
-    git pull origin main
+    # Ensure we are on the main branch
+    git checkout main
+    
+    # Pull the latest changes with rebase to avoid merge commits
+    git pull --rebase origin main
+    
+    # Add all files to the commit
     git add .
-    git commit -m "🚀 Release: $NEW_VERSION"
-    git push origin main
+    
+    # Check if there are changes before committing
+    if ! git diff-index --quiet HEAD --; then
+        git commit -m "🚀 Release: $NEW_VERSION"
+    else
+        echo -e "${YELLOW}⚠️ No changes to commit.${NC}"
+    fi
 
-    echo -e "${GREEN}✅ Changes pushed to GitHub.${NC}"
+    # Push the updates to GitHub
+    git push origin main
+    
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}✅ Changes successfully pushed to GitHub.${NC}"
+    else
+        echo -e "${RED}❌ Git push failed. Trying force push...${NC}"
+        git push --force origin main
+    fi
 }
 
 # **8️⃣ Build and Upload to PyPI**

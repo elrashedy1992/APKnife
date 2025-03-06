@@ -1,6 +1,6 @@
 Metadata-Version: 2.2
 Name: apknife
-Version: 1.0.15
+Version: 1.0.16
 Summary: APKnife is an advanced tool for APK analysis, modification, and security auditing. Whether you're a security researcher, penetration tester, or Android developer, APKnife provides powerful features for reverse engineering, decompiling, modifying, and analyzing APK files.
 Author-email: Mr_nightmare <hmjany18@gmail.com>
 License: MIT
