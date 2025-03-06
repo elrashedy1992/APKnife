@@ -15,8 +15,8 @@ from apknife.modules import (
     java_extractor, manifest_editor, permission_scanner, signer, smali_tools,
     vulnerability_scanner, xml_decoder
 )
-from modules.interactive_mode import interactive_shell
-from modules.apk_modifier import APKModifier
+from apknife.modules.interactive_mode import interactive_shell
+from apknife.modules.apk_modifier import APKModifier
 
 # ANSI color codes for terminal output styling
 RED = "\033[91m"

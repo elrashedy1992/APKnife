@@ -79,7 +79,7 @@ EOF
     echo -e "${GREEN}✅ Setup files are correct.${NC}"
 }
 
-# **3️⃣ Run Security Checks & Save Reports**
+# **3️⃣ Fix Security Issues**
 function fix_security_issues() {
     echo -e "${YELLOW}🔍 Running security checks...${NC}"
     
@@ -101,13 +101,14 @@ function fix_security_issues() {
 function fix_requirements() {
     echo -e "${YELLOW}🔄 Checking package compatibility in requirements.txt...${NC}"
     
-    # Update pip to the latest version
+    # Ensure pip is up-to-date
     echo -e "${YELLOW}🔄 Updating pip to the latest version...${NC}"
-    pip install --upgrade pip
+    pip install --upgrade pip --user || sudo pip install --upgrade pip
 
     # Ensure exact versions are specified in requirements.txt
     echo -e "${YELLOW}📄 Freezing exact versions in requirements.txt...${NC}"
-    pip freeze > requirements.txt
+    pip freeze > temp_requirements.txt
+    mv temp_requirements.txt requirements.txt
 
     # Check for version conflicts
     echo -e "${YELLOW}🔍 Checking for version conflicts...${NC}"
@@ -115,26 +116,12 @@ function fix_requirements() {
         echo -e "${GREEN}✅ No version conflicts detected.${NC}"
     else
         echo -e "${YELLOW}⚠️ Version conflicts detected! Attempting to resolve...${NC}"
+        pip install -r requirements.txt --upgrade --force-reinstall --user || sudo pip install -r requirements.txt --upgrade --force-reinstall
         
-        # Try to install the correct versions from requirements.txt
-        pip install -r requirements.txt --upgrade --force-reinstall
-        
-        # Re-check for conflicts
         if pip check; then
             echo -e "${GREEN}✅ Version conflicts resolved.${NC}"
         else
-            echo -e "${YELLOW}⚠️ Still detecting conflicts. Trying to loosen version constraints...${NC}"
-            
-            # Remove conflicting packages and reinstall
-            pip uninstall -y python-dateutil matplotlib
-            pip install python-dateutil==2.9.0.post0 matplotlib --upgrade
-            
-            # Re-check for conflicts
-            if pip check; then
-                echo -e "${GREEN}✅ Version conflicts resolved.${NC}"
-            else
-                echo -e "${RED}❌ Unable to resolve version conflicts automatically. Please check manually.${NC}"
-            fi
+            echo -e "${RED}❌ Unable to resolve version conflicts automatically. Please check manually.${NC}"
         fi
     fi
 }
@@ -162,69 +149,44 @@ function update_version() {
     echo -e "${GREEN}✅ Version updated.${NC}"
 }
 
-# **7️⃣ Sync with GitHub (Handling Divergent Branches)**
+# **7️⃣ Sync with GitHub**
 function sync_with_github() {
     echo -e "${YELLOW}🔄 Syncing with GitHub...${NC}"
     
-    # Ensure we are on the main branch
     git checkout main
-    
-    # Pull the latest changes with rebase to avoid merge commits
     git pull --rebase origin main
-    
-    # Add all files to the commit
     git add .
     
-    # Check if there are changes before committing
     if ! git diff-index --quiet HEAD --; then
         git commit -m "🚀 Release: $NEW_VERSION"
     else
         echo -e "${YELLOW}⚠️ No changes to commit.${NC}"
     fi
 
-    # Push the updates to GitHub
-    git push origin main
-    
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}✅ Changes successfully pushed to GitHub.${NC}"
-    else
-        echo -e "${RED}❌ Git push failed. Trying force push...${NC}"
-        git push --force origin main
-    fi
+    git push origin main || git push --force origin main
+
+    echo -e "${GREEN}✅ Changes successfully pushed to GitHub.${NC}"
 }
 
 # **8️⃣ Build and Upload to PyPI**
 function build_and_upload_to_pypi() {
-    echo -e "${YELLOW}📦 Cleaning and building package...${NC}"
+    echo -e "${YELLOW}📦 Building and uploading package...${NC}"
     
     rm -rf dist/ build/ *.egg-info
     python -m build
-
-    echo -e "${YELLOW}📤 Uploading package to PyPI...${NC}"
     twine upload dist/*
 
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}✅ Package uploaded successfully to PyPI.${NC}"
-    else
-        echo -e "${RED}❌ Upload failed. Please check for errors.${NC}"
-        exit 1
-    fi
+    echo -e "${GREEN}✅ Package uploaded successfully to PyPI.${NC}"
 }
 
-# **9️⃣ Verify Tool Execution After Installation**
+# **9️⃣ Verify Tool Execution**
 function check_tool_execution() {
     echo -e "${YELLOW}🔄 Verifying tool execution...${NC}"
 
-    # Create a virtual environment for testing
-    echo -e "${YELLOW}🧪 Creating a virtual environment for testing...${NC}"
     python -m venv test_env
     source test_env/bin/activate
+    pip install . --user || sudo pip install .
 
-    # Install the package in the virtual environment
-    echo -e "${YELLOW}📦 Installing the package in the virtual environment...${NC}"
-    pip install .
-
-    # Verify the tool execution
     if ! command -v apknife &> /dev/null; then
         echo -e "${RED}❌ The tool does not run when calling 'apknife'.${NC}"
         deactivate
@@ -232,36 +194,23 @@ function check_tool_execution() {
         exit 1
     fi
 
-    # Deactivate and remove the virtual environment
     deactivate
     rm -rf test_env
-
     echo -e "${GREEN}✅ The tool runs successfully.${NC}"
 }
 
-# **🔟 Clean Up Unnecessary Files**
+# **🔟 Cleanup**
 function cleanup() {
     echo -e "${YELLOW}🧹 Cleaning up unnecessary files...${NC}"
-
-    # Remove virtual environment if it exists
-    if [ -d "test_env" ]; then
-        echo -e "${YELLOW}🗑️ Deleting test virtual environment...${NC}"
-        rm -rf test_env
-    fi
-
-    # Remove build and distribution directories
-    echo -e "${YELLOW}🗑️ Deleting build and distribution directories...${NC}"
-    rm -rf dist/ build/ *.egg-info
-
-    # Remove any other temporary files
-    echo -e "${YELLOW}🗑️ Deleting other temporary files...${NC}"
+    
+    rm -rf test_env dist/ build/ *.egg-info
     find . -type d -name "__pycache__" -exec rm -rf {} +
     find . -type f -name "*.pyc" -delete
 
     echo -e "${GREEN}✅ Cleanup completed.${NC}"
 }
 
-# **Run all steps in order**
+# **Run all steps**
 fix_project_structure
 fix_setup_files
 fix_security_issues
@@ -273,6 +222,4 @@ build_and_upload_to_pypi
 check_tool_execution
 cleanup
 
-echo -e "${BLUE}==========================================="
-echo -e "    🚀 Successfully released version $NEW_VERSION!"
-echo -e "===========================================${NC}"
+echo -e "${BLUE}🚀 Successfully released version $NEW_VERSION!${NC}"
