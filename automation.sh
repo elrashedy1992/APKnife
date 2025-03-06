@@ -67,17 +67,20 @@ function fix_security_issues() {
     echo -e "${GREEN}✅ Security checks completed.${NC}"
 }
 
-# 4️⃣ Update pip & setuptools
+# 4️⃣ Fix setuptools conflicts & update pip
 function update_pip_and_setuptools() {
-    echo -e "${YELLOW}🔄 Updating pip and setuptools to the latest version...${NC}"
-    if [ -n "$VIRTUAL_ENV" ]; then
-        pip install --upgrade pip setuptools
-    else
-        pip install --upgrade pip setuptools --user || sudo pip install --upgrade pip setuptools
-    fi
+    echo -e "${YELLOW}🔄 Fixing setuptools conflicts...${NC}"
+    
+    # Uninstall all setuptools versions to prevent conflicts
+    pip uninstall -y setuptools
+    
+    # Install the latest compatible version automatically
+    pip install --upgrade pip setuptools
+
+    echo -e "${GREEN}✅ Pip and setuptools updated.${NC}"
 }
 
-# 5️⃣ Generate Requirements Using pipreqs
+# 5️⃣ Generate Requirements Using pipreqs (Ensure no duplicates)
 function fix_requirements() {
     echo -e "${YELLOW}🔄 Generating requirements.txt using pipreqs...${NC}"
 
@@ -90,12 +93,11 @@ function fix_requirements() {
     # Run pipreqs to generate requirements.txt based on the project code
     pipreqs . --force
 
-    echo -e "${YELLOW}🔍 Checking for version conflicts...${NC}"
-    if ! pip check; then
-        echo -e "${YELLOW}⚠️ Resolving package conflicts...${NC}"
-        install_requirements
-    fi
+    # Remove duplicate dependencies
+    sort -u -o requirements.txt requirements.txt
 
+    echo -e "${YELLOW}📦 Installing dependencies...${NC}"
+    install_requirements
     echo -e "${GREEN}✅ Requirements are updated.${NC}"
 }
 
@@ -105,11 +107,7 @@ function install_requirements() {
     
     update_pip_and_setuptools  # Ensure setuptools is up to date to prevent conflicts
     
-    if [ -n "$VIRTUAL_ENV" ]; then
-        pip install -r requirements.txt --upgrade --force-reinstall
-    else
-        pip install -r requirements.txt --upgrade --force-reinstall --user || sudo pip install -r requirements.txt --upgrade --force-reinstall
-    fi
+    pip install -r requirements.txt --upgrade --force-reinstall
 }
 
 # 7️⃣ Run Tests
