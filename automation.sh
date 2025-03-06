@@ -101,28 +101,41 @@ function fix_security_issues() {
 function fix_requirements() {
     echo -e "${YELLOW}🔄 Checking package compatibility in requirements.txt...${NC}"
     
+    # Update pip to the latest version
+    echo -e "${YELLOW}🔄 Updating pip to the latest version...${NC}"
+    pip install --upgrade pip
+
     # Ensure exact versions are specified in requirements.txt
     echo -e "${YELLOW}📄 Freezing exact versions in requirements.txt...${NC}"
     pip freeze > requirements.txt
 
     # Check for version conflicts
     echo -e "${YELLOW}🔍 Checking for version conflicts...${NC}"
-    pip check
-    if [ $? -ne 0 ]; then
+    if pip check; then
+        echo -e "${GREEN}✅ No version conflicts detected.${NC}"
+    else
         echo -e "${YELLOW}⚠️ Version conflicts detected! Attempting to resolve...${NC}"
         
         # Try to install the correct versions from requirements.txt
         pip install -r requirements.txt --upgrade --force-reinstall
         
         # Re-check for conflicts
-        pip check
-        if [ $? -ne 0 ]; then
-            echo -e "${RED}❌ Unable to resolve version conflicts automatically. Please check manually.${NC}"
-        else
+        if pip check; then
             echo -e "${GREEN}✅ Version conflicts resolved.${NC}"
+        else
+            echo -e "${YELLOW}⚠️ Still detecting conflicts. Trying to loosen version constraints...${NC}"
+            
+            # Remove conflicting packages and reinstall
+            pip uninstall -y python-dateutil matplotlib
+            pip install python-dateutil==2.9.0.post0 matplotlib --upgrade
+            
+            # Re-check for conflicts
+            if pip check; then
+                echo -e "${GREEN}✅ Version conflicts resolved.${NC}"
+            else
+                echo -e "${RED}❌ Unable to resolve version conflicts automatically. Please check manually.${NC}"
+            fi
         fi
-    else
-        echo -e "${GREEN}✅ No version conflicts detected.${NC}"
     fi
 }
 
