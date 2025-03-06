@@ -1,0 +1,33 @@
+# Ignore virtual environment files
+venv/
+.env
+
+# Ignore Python temporary files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore output and build directories
+build/
+dist/
+*.egg-info/
+
+# Ignore local configuration files
+*.local
+*.log
+
+# Ignore IDE files
+.vscode/
+.idea/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore specific files
+secrets.txt
+config.ini
+.apknife_history
+automation.sh
+apknife.egg-info
