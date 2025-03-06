@@ -93,6 +93,9 @@ function fix_requirements() {
     # Run pipreqs to generate requirements.txt based on the project code
     pipreqs . --force
 
+    # Remove setuptools to avoid conflicts
+    sed -i '/setuptools/d' requirements.txt
+
     # Remove duplicate dependencies
     sort -u -o requirements.txt requirements.txt
 
