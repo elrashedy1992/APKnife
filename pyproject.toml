@@ -83,6 +83,3 @@ Source = "https://github.com/elrashedy1992/APKnife"
 [project.scripts]
 apknife = "apknife.apknife:main"
 
-[tool.setuptools]
-packages = ["apknife"]
-package-dir = {"" = "apknife"}
