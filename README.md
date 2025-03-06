@@ -171,11 +171,9 @@ rustc --version
 
 ---
 
-📥 Cloning the Repository & Installing Dependencies
+📥 Installing APKnife
 ```
-git clone https://github.com/elrashedy1992/APKnife.git
-cd APKnife
-pip install -r requirements.txt
+pip install apk nife
 ```
 
 
