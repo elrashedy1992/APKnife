@@ -32,3 +32,5 @@ config.ini
 automation.sh
 apknife.egg-info
 
+hater.apk
+apknife/apknife.egg-info/

@@ -1,15 +1,22 @@
 from setuptools import setup, find_packages
+import os
 
-with open("README.md", "r", encoding="utf-8") as f:
-    long_description = f.read()
+# Safely read the README.md file
+long_description = ""
+if os.path.exists("README.md"):
+    with open("README.md", "r", encoding="utf-8") as f:
+        long_description = f.read()
 
-with open("requirements.txt", "r", encoding="utf-8") as f:
-    requirements = f.read().splitlines()
+# Safely read the requirements.txt file
+requirements = []
+if os.path.exists("requirements.txt"):
+    with open("requirements.txt", "r", encoding="utf-8") as f:
+        requirements = f.read().splitlines()
 
 setup(
     name="apknife",
-    version='1.1.6',
-    description="APKnife is an advanced tool for APK analysis, modification, and security auditing. Whether you're a security researcher, penetration tester, or Android developer, APKnife provides powerful features for reverse engineering, decompiling, modifying, and analyzing APK files.",
+    version='1.1.7',
+    description="APKnife is an advanced tool for APK analysis, modification, and security auditing.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Mr_nightmare",
@@ -25,7 +32,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     package_data={
-        "apknife.tools": ["baksmali.jar"],
+        "apknife.modules.tools": ["baksmali.jar"],  # Ensure baksmali.jar is included in the package
     },
     install_requires=requirements,
     entry_points={
@@ -33,4 +40,5 @@ setup(
             "apknife=apknife.apknife:main",
         ],
     },
+    zip_safe=False,  # Prevent package compression to ensure access to baksmali.jar
 )
