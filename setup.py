@@ -15,7 +15,7 @@ if os.path.exists("requirements.txt"):
 
 setup(
     name="apknife",
-    version='1.1.7',
+    version='1.1.8',
     description="APKnife is an advanced tool for APK analysis, modification, and security auditing.",
     long_description=long_description,
     long_description_content_type="text/markdown",

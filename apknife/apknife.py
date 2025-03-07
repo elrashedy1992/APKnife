@@ -71,13 +71,27 @@ def load_commands():
     if not os.path.exists("commands.json"):
         logging.warning(f"{YELLOW}[!] commands.json not found. Creating a default one...{RESET}")
         default_commands = {
-            "help": "Displays this help menu",
-            "exit": "Exits the interactive mode",
-            "update-commands": "Reloads the commands from the external file",
-            "list-commands": "Displays the current list of available commands",
-            "extract-dex": "Extract DEX files from an APK without fully decompiling it",
-            "decode_manifest": "Decode AndroidManifest.xml without fully decompiling the APK",
-            "waf": "Scan the app for protection mechanisms (e.g., Firewall, ProGuard, etc.)"  # Added the new command
+              "help": "Displays this help menu",
+    "exit": "Exits the interactive mode",
+    "update-commands": "Reloads the commands from the external file",
+    "list-commands": "Displays the current list of available commands",
+    "extract-dex": "Extract DEX files from an APK without fully decompiling it",
+    "decode_manifest": "Decode AndroidManifest.xml without fully decompiling the APK",
+    "waf": "Scan the app for protection mechanisms (e.g., Firewall, ProGuard, etc.)",
+    "analyze": "Analyze the APK for security vulnerabilities",
+    "build": "Rebuild an APK from extracted files",
+    "sign": "Sign an APK file",
+    "edit-manifest": "Edit the AndroidManifest.xml of an APK",
+    "smali": "Decompile an APK to Smali code",
+    "find-oncreate": "Find onCreate methods in an APK",
+    "find-api": "Find API calls in an APK",
+    "scan-vulnerabilities": "Scan an APK for vulnerabilities",
+    "scan-permissions": "Scan and list permissions used by an APK",
+    "catch_rat": "Analyze an APK for Remote Access Trojan (RAT) indicators",
+    "extract-java": "Extract Java source code from an APK",
+    "extract-sensitive": "Extract sensitive data from an APK",
+    "modify-apk": "Modify an APK's metadata (name, icon, package name)",
+    "extract-dex": "Extract DEX files from an APK",
         }
         with open("commands.json", "w") as file:
             json.dump(default_commands, file, indent=4)
