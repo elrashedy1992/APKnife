@@ -1,4 +1,4 @@
-```
+
 # APKnife: The Cyber Blade of APK Domination 🔪🧸
 
 <p align="center">
@@ -46,7 +46,7 @@ Before installing APKnife, it's recommended to set up a Python virtual environme
 
 1️⃣ **Create a Python Virtual Environment:**
 
-```bash
+```
 python3 -m venv venv
 source venv/bin/activate  # On Linux/macOS
 venv\Scripts\activate  # On Windows
@@ -56,7 +56,7 @@ venv\Scripts\activate  # On Windows
 
 Once the virtual environment is activated, install APKnife:
 
-```bash
+```
 pip install apknife
 ```
 
@@ -68,7 +68,7 @@ APKnife requires Rust for building. Follow the installation steps based on your 
 
 ### 🐧 On Linux:
 
-```bash
+```
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
@@ -76,7 +76,7 @@ Then follow the on-screen instructions.
 
 ### 🍏 On macOS (Using Homebrew):
 
-```bash
+```
 brew install rust
 ```
 
@@ -85,7 +85,7 @@ brew install rust
 1. Visit [rustup.rs](https://rustup.rs/) and install Rust.
 2. Verify installation:
 
-```bash
+```
 rustc --version
 ```
 
@@ -97,13 +97,13 @@ rustc --version
 
 Ensure Termux is up to date:
 
-```bash
+```
 pkg update && pkg upgrade
 ```
 
 Install required build tools:
 
-```bash
+```
 pkg install clang make python rust
 ```
 
@@ -112,7 +112,7 @@ pkg install clang make python rust
 - **Rust not installed properly?** Ensure it's correctly installed via rustup or your package manager.
 - **Python conflicts?** If there are issues with virtual environments, reset it:
 
-```bash
+```
 rm -rf venv
 python3 -m venv venv
 source venv/bin/activate
@@ -120,7 +120,7 @@ source venv/bin/activate
 
 ### ✅ Verifying Installed Versions
 
-```bash
+```
 python --version
 rustc --version
 ```
@@ -131,20 +131,20 @@ rustc --version
 
 ### 🐧 On Linux/macOS
 
-```bash
+```
 nano ~/.bashrc # For bash
 nano ~/.zshrc   # For zsh
 ```
 
 Add this line at the end:
 
-```bash
+```
 export PATH="$HOME/.cargo/bin:$PATH"
 ```
 
 Apply changes:
 
-```bash
+```
 source ~/.bashrc  # For bash
 source ~/.zshrc   # For zsh
 ```
@@ -162,7 +162,7 @@ C:\Users\<YourUsername>\.cargo\bin
 
 Verify the setup:
 
-```bash
+```
 cargo --version
 rustc --version
 ```
