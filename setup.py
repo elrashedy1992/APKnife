@@ -8,7 +8,7 @@ with open("requirements.txt", "r", encoding="utf-8") as f:
 
 setup(
     name="apknife",
-    version='1.1.5',
+    version='1.1.6',
     description="APKnife is an advanced tool for APK analysis, modification, and security auditing. Whether you're a security researcher, penetration tester, or Android developer, APKnife provides powerful features for reverse engineering, decompiling, modifying, and analyzing APK files.",
     long_description=long_description,
     long_description_content_type="text/markdown",
