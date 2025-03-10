@@ -34,3 +34,5 @@ apknife.egg-info
 
 hater.apk
 apknife/apknife.egg-info/
+bandit_report.txt
+safety_report.txt

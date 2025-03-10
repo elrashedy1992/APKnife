@@ -5,4 +5,4 @@ include commands.json
 recursive-include apknife *.py *.json *.txt *.png
 recursive-include apknife/modules *.py
 recursive-include apknife/assets *
-recursive-include apknife/tools *
+recursive-include apknife/modules/tools *.jar
