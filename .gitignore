@@ -36,3 +36,4 @@ hater.apk
 apknife/apknife.egg-info/
 bandit_report.txt
 safety_report.txt
+update_pypi.sh
