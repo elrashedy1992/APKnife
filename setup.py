@@ -1,21 +1,19 @@
 from setuptools import setup, find_packages
 import os
 
-# Safely read the README.md file
 long_description = ""
 if os.path.exists("README.md"):
     with open("README.md", "r", encoding="utf-8") as f:
         long_description = f.read()
 
-# Safely read the requirements.txt file
 requirements = []
 if os.path.exists("requirements.txt"):
     with open("requirements.txt", "r", encoding="utf-8") as f:
-        requirements = f.read().splitlines()
+        requirements = [line.strip() for line in f.readlines() if line.strip()]
 
 setup(
     name="apknife",
-    version='1.1.8',
+    version="1.2.0",
     description="APKnife is an advanced tool for APK analysis, modification, and security auditing.",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -28,17 +26,25 @@ setup(
         "Source": "https://github.com/elrashedy1992/APKnife",
     },
     license="MIT",
+    license_files=["LICENSE"],
     python_requires=">=3.6",
     packages=find_packages(),
     include_package_data=True,
     package_data={
-        "apknife.modules.tools": ["baksmali.jar"],  # Ensure baksmali.jar is included in the package
+        "apknife.modules.tools": ["baksmali.jar"]
     },
-    install_requires=requirements,
+    install_requires=requirements if requirements else [],
     entry_points={
         "console_scripts": [
             "apknife=apknife.apknife:main",
         ],
     },
-    zip_safe=False,  # Prevent package compression to ensure access to baksmali.jar
+    classifiers=[
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3",
+        "Operating System :: OS Independent",
+        "Topic :: Security",
+        "Development Status :: 5 - Production/Stable",
+    ],
+    zip_safe=False,
 )
