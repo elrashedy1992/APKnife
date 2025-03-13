@@ -10,7 +10,6 @@ authors = [{ name = "Mr_nightmare", email = "hmjany18@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.6"
 license = { text = "MIT" }
-license-files = ["LICENSE"]
 
 dependencies = [
     "androguard==4.1.3",
@@ -26,6 +25,7 @@ dependencies = [
 [tool.setuptools]
 include-package-data = true
 packages = { find = { include = ["apknife*"], exclude = ["tests*", "docs*", "examples*", "kaboosvenv"] } }
+license-files = ["LICENSE"]  # ✅ تم نقلها هنا
 
 [tool.setuptools.package-data]
 "apknife.modules.tools" = ["baksmali.jar"]
